@@ -1,0 +1,828 @@
+fileFormatVersion: 2
+guid: 13833a8f41870654f9e554be9eab09ae
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6926253761593276509
+    second: Monopoly Atlas_0
+  - first:
+      213: 2124577779792261995
+    second: Monopoly Atlas_1
+  - first:
+      213: -3289967410836953927
+    second: Monopoly Atlas_2
+  - first:
+      213: 3037721211456032101
+    second: Monopoly Atlas_3
+  - first:
+      213: -3879597918412925479
+    second: Monopoly Atlas_4
+  - first:
+      213: -5252506802611547721
+    second: Monopoly Atlas_5
+  - first:
+      213: 2191298251221055399
+    second: Monopoly Atlas_8
+  - first:
+      213: 651986936482102503
+    second: Monopoly Atlas_9
+  - first:
+      213: -4985647216182599752
+    second: Monopoly Atlas_10
+  - first:
+      213: -1395711767876872168
+    second: Monopoly Atlas_11
+  - first:
+      213: -8355823255105199568
+    second: Monopoly Atlas_13
+  - first:
+      213: 3731494397176663103
+    second: Monopoly Atlas_14
+  - first:
+      213: 1828422801808839469
+    second: Monopoly Atlas_15
+  - first:
+      213: 7235800245409086347
+    second: Monopoly Atlas_16
+  - first:
+      213: 5680360190655157408
+    second: Monopoly Atlas_17
+  - first:
+      213: -6740740192435519438
+    second: Monopoly Atlas_18
+  - first:
+      213: -2080442330087029895
+    second: Monopoly Atlas_19
+  - first:
+      213: 1773274225525890798
+    second: Monopoly Atlas_20
+  - first:
+      213: -1378640923271978662
+    second: Monopoly Atlas_21
+  - first:
+      213: 2299042230510154755
+    second: Monopoly Atlas_22
+  - first:
+      213: 3049124707979188797
+    second: Monopoly Atlas_23
+  - first:
+      213: -9125757568862972011
+    second: Monopoly Atlas_24
+  - first:
+      213: 832436408814924931
+    second: Monopoly Atlas_25
+  - first:
+      213: 2967817932129802983
+    second: Monopoly Atlas_26
+  - first:
+      213: 598211157072457072
+    second: Monopoly Atlas_27
+  - first:
+      213: 7851380070612926298
+    second: Monopoly Atlas_28
+  - first:
+      213: -3211072074936621587
+    second: Monopoly Atlas_29
+  - first:
+      213: -4568277458390458706
+    second: Monopoly Atlas_30
+  - first:
+      213: -3320518419747010894
+    second: Monopoly Atlas_6
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Monopoly Atlas_0
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 1878
+        width: 448
+        height: 445
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a7050496e001ef90800000000000000
+      internalID: -6926253761593276509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_1
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 1939
+        width: 446
+        height: 384
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b63b436fb340c7d10800000000000000
+      internalID: 2124577779792261995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_2
+      rect:
+        serializedVersion: 2
+        x: 1071
+        y: 1949
+        width: 451
+        height: 374
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b4a3722210b752d0800000000000000
+      internalID: -3289967410836953927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_3
+      rect:
+        serializedVersion: 2
+        x: 1682
+        y: 1947
+        width: 335
+        height: 376
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 56d8187e857282a20800000000000000
+      internalID: 3037721211456032101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_4
+      rect:
+        serializedVersion: 2
+        x: 2204
+        y: 1895
+        width: 321
+        height: 358
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d517a98f36e82ac0800000000000000
+      internalID: -3879597918412925479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_5
+      rect:
+        serializedVersion: 2
+        x: 2575
+        y: 1895
+        width: 334
+        height: 359
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7b1140a54e85b17b0800000000000000
+      internalID: -5252506802611547721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_8
+      rect:
+        serializedVersion: 2
+        x: 2981
+        y: 1895
+        width: 355
+        height: 338
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a737f4462e096e10800000000000000
+      internalID: 2191298251221055399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_9
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 1421
+        width: 424
+        height: 387
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ecf5331aa25c0900800000000000000
+      internalID: 651986936482102503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_10
+      rect:
+        serializedVersion: 2
+        x: 592
+        y: 1396
+        width: 323
+        height: 453
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8bf5500a54c6fcab0800000000000000
+      internalID: -4985647216182599752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_11
+      rect:
+        serializedVersion: 2
+        x: 1122
+        y: 1391
+        width: 290
+        height: 463
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 818dddaba8f61ace0800000000000000
+      internalID: -1395711767876872168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_13
+      rect:
+        serializedVersion: 2
+        x: 1668
+        y: 1418
+        width: 367
+        height: 419
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 032a18145072a0c80800000000000000
+      internalID: -8355823255105199568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_14
+      rect:
+        serializedVersion: 2
+        x: 2206
+        y: 1447
+        width: 445
+        height: 365
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3c4319426ee8c330800000000000000
+      internalID: 3731494397176663103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_15
+      rect:
+        serializedVersion: 2
+        x: 2741
+        y: 1493
+        width: 123
+        height: 259
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d235a01d9dcdf5910800000000000000
+      internalID: 1828422801808839469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_16
+      rect:
+        serializedVersion: 2
+        x: 2928
+        y: 1495
+        width: 124
+        height: 259
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8bfa4d7cf9ba6460800000000000000
+      internalID: 7235800245409086347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 573
+        width: 548
+        height: 549
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a455406f71b4de40800000000000000
+      internalID: 5680360190655157408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_18
+      rect:
+        serializedVersion: 2
+        x: 565
+        y: 573
+        width: 551
+        height: 549
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 230ceaa42841472a0800000000000000
+      internalID: -6740740192435519438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_19
+      rect:
+        serializedVersion: 2
+        x: 1135
+        y: 573
+        width: 550
+        height: 549
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9730a7339b8c023e0800000000000000
+      internalID: -2080442330087029895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_20
+      rect:
+        serializedVersion: 2
+        x: 1703
+        y: 573
+        width: 551
+        height: 549
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eee93dd438feb9810800000000000000
+      internalID: 1773274225525890798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_21
+      rect:
+        serializedVersion: 2
+        x: 2272
+        y: 573
+        width: 550
+        height: 549
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a51ae8772651edce0800000000000000
+      internalID: -1378640923271978662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_22
+      rect:
+        serializedVersion: 2
+        x: 2841
+        y: 573
+        width: 551
+        height: 549
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 304fd215ab6d7ef10800000000000000
+      internalID: 2299042230510154755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_23
+      rect:
+        serializedVersion: 2
+        x: 3409
+        y: 573
+        width: 548
+        height: 549
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d3a57f654caa05a20800000000000000
+      internalID: 3049124707979188797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 548
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 597179967dbca5180800000000000000
+      internalID: -9125757568862972011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_25
+      rect:
+        serializedVersion: 2
+        x: 565
+        y: 0
+        width: 551
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 384f38dd0886d8b00800000000000000
+      internalID: 832436408814924931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_26
+      rect:
+        serializedVersion: 2
+        x: 1135
+        y: 0
+        width: 550
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ea91a26faecf2920800000000000000
+      internalID: 2967817932129802983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_27
+      rect:
+        serializedVersion: 2
+        x: 1703
+        y: 0
+        width: 551
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07daafdb0e54d4800800000000000000
+      internalID: 598211157072457072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_28
+      rect:
+        serializedVersion: 2
+        x: 2272
+        y: 0
+        width: 550
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5ff6796394b5fc60800000000000000
+      internalID: 7851380070612926298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_29
+      rect:
+        serializedVersion: 2
+        x: 2841
+        y: 0
+        width: 551
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de5e939f5faff63d0800000000000000
+      internalID: -3211072074936621587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_30
+      rect:
+        serializedVersion: 2
+        x: 3409
+        y: 0
+        width: 548
+        height: 548
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eae5639fad73a90c0800000000000000
+      internalID: -4568277458390458706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Monopoly Atlas_6
+      rect:
+        serializedVersion: 2
+        x: 2979
+        y: 2068
+        width: 344
+        height: 167
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2b686d017162be1d0800000000000000
+      internalID: -3320518419747010894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
