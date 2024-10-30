@@ -68,7 +68,7 @@ public class MonopolyNode : MonoBehaviour
     public static DrawChanceCard OnDrawChanceCard;
 
     //HUMAN UI
-    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn);
+    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn, bool hasChanceJailFreeCard, bool hasCommunityJailFreeCard);
     public static ShowHumanPanel OnShowHumanPanel;//каждый раз когда мы что-то делаем - происходит Invoke Human Panel 
 
     //BUY PROPERTY PANEL
@@ -176,11 +176,8 @@ public class MonopolyNode : MonoBehaviour
     public void UnMortgageProperty()
     {
         isMortgaged = false;
-        Debug.Log(mortgageImage+ " = mortgageImage" );
         if (mortgageImage != null)
         {
-
-            Debug.Log(mortgageImage + " = mortgageImage");
             mortgageImage.SetActive(false);
         }
 
@@ -212,19 +209,19 @@ public class MonopolyNode : MonoBehaviour
         }
     }
 
-    public void PlayerLandedOnNode(Player currentplayer)
+    public void PlayerLandedOnNode(Player currentPlayer)
     {
-        bool isPlayerHuman = currentplayer.playerType == Player.PlayerType.HUMAN;
+        bool isPlayerHuman = currentPlayer.playerType == Player.PlayerType.HUMAN;
         bool continueTurn = true;
-        //ПРОВЕРКА НА ТИПП КАРТОЧКИ И ДЕЙСТВИЕ
-
+        //ПРОВЕРКА НА ТИП КАРТОЧКИ И ДЕЙСТВИЕ
+        //Debug.Log("Player Landed on node.");
         switch (type)
         {
             case MonopolyNodeType.Property:
                 if (!isPlayerHuman)//AI
                 {
                     //Если ЗАНЯТО + НЕ НАШЕ + НЕ ЗАЛОЖЕНО - плачу ренту кому-то
-                    if(owner != null && owner != currentplayer && !isMortgaged)
+                    if(owner != null && owner != currentPlayer && !isMortgaged)
                     {
 
                         //расчёт ренты
@@ -232,17 +229,17 @@ public class MonopolyNode : MonoBehaviour
                         int rentToPay = CalculatePropertyRent();
                         
                         //оплата ренты
-                        currentplayer.PayRent(rentToPay, owner);
+                        currentPlayer.PayRent(rentToPay, owner);
 
                         //Уведомление о транзакции (для всех игроков)
-                        OnUpdateMessage.Invoke(currentplayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
                     }
-                    else if( owner == null && currentplayer.CanAffordNode(price))
+                    else if( owner == null && currentPlayer.CanAffordNode(price))
                     {
                         //AI Покупает карточку
                         //Debug.Log("ВЫ МОЖЕТЕ ПРИОБРЕСТИ");
-                        OnUpdateMessage.Invoke(currentplayer.nickname + " приобретает " + this.name);//DESIGN
-                        currentplayer.BuyProperty(this);
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " приобретает " + this.name);//DESIGN
+                        currentPlayer.BuyProperty(this);
                         //OnOwnerUpdated();
 
                         //УВЕДОМЛЕНИЕ
@@ -256,7 +253,7 @@ public class MonopolyNode : MonoBehaviour
                 else//HUMAN
                 {
                     //Если ЗАНЯТО + НЕ НАШЕ + НЕ ЗАЛОЖЕНО - плачу ренту кому-то
-                    if (owner!= null && owner != currentplayer && !isMortgaged)
+                    if (owner!= null && owner != currentPlayer && !isMortgaged)
                     {
 
                         //расчёт ренты
@@ -264,20 +261,21 @@ public class MonopolyNode : MonoBehaviour
                         int rentToPay = CalculatePropertyRent();
 
                         //оплата ренты
-                        currentplayer.PayRent(rentToPay, owner);
+                        currentPlayer.PayRent(rentToPay, owner);
 
                         //Уведомление о транзакции (для всех игроков)
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
 
                     }
                     else if (owner == null)
                     {
                         //UI для покупки и управления
-                        OnShowPropertyBuyPanel.Invoke(this, currentplayer);
+                        OnShowPropertyBuyPanel.Invoke(this, currentPlayer);
                     }
                     else
                     {
                         //ЕСЛИ НЕ ЗАНЯТО + НЕ МОЖЕМ ПОЗВОЛИТЬ
-                        OnShowPropertyBuyPanel.Invoke(this, currentplayer);
+                        OnShowPropertyBuyPanel.Invoke(this, currentPlayer);
                     }
                 }
                 break;
@@ -286,24 +284,24 @@ public class MonopolyNode : MonoBehaviour
                 if (!isPlayerHuman)//AI
                 {
                     //Если ЗАНЯТО + НЕ НАШЕ + НЕ ЗАЛОЖЕНО - плачу ренту кому-то
-                    if (owner != null && owner != currentplayer && !isMortgaged)
+                    if (owner != null && owner != currentPlayer && !isMortgaged)
                     {
 
                         //расчёт ренты
                         int rentToPay = CalculateUtilityRent();
                         currentRent = rentToPay;
                         //оплата ренты
-                        currentplayer.PayRent(rentToPay, owner);
+                        currentPlayer.PayRent(rentToPay, owner);
 
                         //Уведомление о транзакции (для всех игроков)
-                        OnUpdateMessage.Invoke(currentplayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
                     }
-                    else if (owner == null && currentplayer.CanAffordNode(price))
+                    else if (owner == null && currentPlayer.CanAffordNode(price))
                     {
                         //AI Покупает карточку
                         //Debug.Log("ВЫ МОЖЕТЕ ПРИОБРЕСТИ");
-                        OnUpdateMessage.Invoke(currentplayer.nickname + " приобретает " + this.name);//DESIGN
-                        currentplayer.BuyProperty(this);
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " приобретает " + this.name);//DESIGN
+                        currentPlayer.BuyProperty(this);
                         OnOwnerUpdated();
 
                         //УВЕДОМЛЕНИЕ
@@ -317,21 +315,22 @@ public class MonopolyNode : MonoBehaviour
                 else//HUMAN
                 {
                     //Если ЗАНЯТО + НЕ НАШЕ + НЕ ЗАЛОЖЕНО - плачу ренту кому-то
-                    if (owner != null && owner != currentplayer && !isMortgaged)
+                    if (owner != null && owner != currentPlayer && !isMortgaged)
                     {
                         //расчёт ренты
                         int rentToPay = CalculateUtilityRent();
                         currentRent = rentToPay;
                         //оплата ренты
-                        currentplayer.PayRent(rentToPay, owner);
+                        currentPlayer.PayRent(rentToPay, owner);
 
                         //Уведомление о транзакции (для всех игроков)
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
 
                     }
                     else if (owner == null)
                     {
                         //UI для покупки и управления
-                        OnShowUtilityBuyPanel.Invoke(this,currentplayer);
+                        OnShowUtilityBuyPanel.Invoke(this,currentPlayer);
                         //УВЕДОМЛЕНИЕ
                     }
                     else
@@ -346,7 +345,7 @@ public class MonopolyNode : MonoBehaviour
                 if (!isPlayerHuman)//AI
                 {
                     //Если ЗАНЯТО + НЕ НАШЕ + НЕ ЗАЛОЖЕНО - плачу ренту кому-то
-                    if (owner != null && owner != currentplayer && !isMortgaged)
+                    if (owner != null && owner != currentPlayer && !isMortgaged)
                     {
 
                         //расчёт ренты
@@ -354,17 +353,17 @@ public class MonopolyNode : MonoBehaviour
                         int rentToPay = CalculateRailroadRent();
                         currentRent = rentToPay;
                         //оплата ренты
-                        currentplayer.PayRent(rentToPay, owner);
+                        currentPlayer.PayRent(rentToPay, owner);
 
                         //Уведомление о транзакции (для всех игроков)
-                        OnUpdateMessage.Invoke(currentplayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
                     }
-                    else if (owner == null && currentplayer.CanAffordNode(price))
+                    else if (owner == null && currentPlayer.CanAffordNode(price))
                     {
                         //AI Покупает карточку
                         //Debug.Log("ВЫ МОЖЕТЕ ПРИОБРЕСТИ");
-                        OnUpdateMessage.Invoke(currentplayer.nickname + " приобретает " + this.name);//DESIGN
-                        currentplayer.BuyProperty(this);
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " приобретает " + this.name);//DESIGN
+                        currentPlayer.BuyProperty(this);
                         OnOwnerUpdated();
 
                         //УВЕДОМЛЕНИЕ
@@ -378,7 +377,7 @@ public class MonopolyNode : MonoBehaviour
                 else//HUMAN
                 {
                     //Если ЗАНЯТО + НЕ НАШЕ + НЕ ЗАЛОЖЕНО - плачу ренту кому-то
-                    if (owner != null && owner != currentplayer && !isMortgaged)
+                    if (owner != null && owner != currentPlayer && !isMortgaged)
                     {
 
                         //расчёт ренты
@@ -386,15 +385,16 @@ public class MonopolyNode : MonoBehaviour
                         int rentToPay = CalculateRailroadRent();
                         currentRent = rentToPay;
                         //оплата ренты
-                        currentplayer.PayRent(rentToPay, owner);
+                        currentPlayer.PayRent(rentToPay, owner);
 
                         //Уведомление о транзакции (для всех игроков)
+                        OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
 
                     }
                     else if (owner == null)
                     {
                         //UI для покупки и управления
-                        OnShowRailroadBuyPanel.Invoke(this, currentplayer);
+                        OnShowRailroadBuyPanel.Invoke(this, currentPlayer);
                         //УВЕДОМЛЕНИЕ
                     }
                     else
@@ -407,37 +407,39 @@ public class MonopolyNode : MonoBehaviour
 
             case MonopolyNodeType.Tax:
                 GameManager.instance.AddTaxToPool(price);
-                currentplayer.PayMoney(price);
+                currentPlayer.PayMoney(price);
                 //ПОКАЗАТЬ УВЕД.!!
-                OnUpdateMessage.Invoke(currentplayer.nickname + " оплачивает налог в размере <b><color=red>" + price+
+                OnUpdateMessage.Invoke(currentPlayer.nickname + " оплачивает налог в размере <b><color=red>" + price+
                     "BYN</b></color>");//DESIGN + BYN
                 break;
 
             case MonopolyNodeType.FreeParking:
                 int tax = GameManager.instance.GetTaxPool();
-                currentplayer.CollectMoney(tax);
+                currentPlayer.CollectMoney(tax);
                 //ПОКАЗАТЬ УВЕД.!!
-                OnUpdateMessage.Invoke(currentplayer.nickname + " производит инкассацию и получает <b><color=green>" + tax +
+                OnUpdateMessage.Invoke(currentPlayer.nickname + " производит инкассацию и получает <b><color=green>" + tax +
                     "BYN</b></color>");//DESIGN + BYN
                 break;
 
             case MonopolyNodeType.GoToJail:
                 //ИНДЕКС ПОЛЯ "ИДИ В ТУРМУ" - 30 на 21.10.24 13:20 ========== id 30 
                 //ИЛИ МОЖНО ЗАПРОСИTЬ
-                int indexOnBoard = MonopolyBoard.instance.route.IndexOf(currentplayer.MyMonopolyNode);
-                OnUpdateMessage.Invoke(currentplayer.nickname +
+                int indexOnBoard = MonopolyBoard.instance.route.IndexOf(currentPlayer.MyMonopolyNode);
+                OnUpdateMessage.Invoke(currentPlayer.nickname +
                     " <b><color=red>задержан</b></color> до выяснения обстоятельств.");//DESIGN
-                currentplayer.GoToJail(indexOnBoard);
+                currentPlayer.GoToJail(indexOnBoard);
                 continueTurn = false;
                 break;
 
             case MonopolyNodeType.Chance:
-                OnDrawChanceCard.Invoke(currentplayer);
+
+                //Debug.Log("Player Landed on chance node.");
+                OnDrawChanceCard.Invoke(currentPlayer);
                 continueTurn = false;
                 break;
 
             case MonopolyNodeType.Community:
-                OnDrawCommunityCard.Invoke(currentplayer);
+                OnDrawCommunityCard.Invoke(currentPlayer);
                 continueTurn = false;
                 break;
         }
@@ -450,32 +452,35 @@ public class MonopolyNode : MonoBehaviour
         //ПРОДОЛЖЕНИЕ
         if(!isPlayerHuman)
         {
-            Invoke("ContinueGame", GameManager.instance.SecondsBetweenTurns);
+            //Invoke("ContinueGame", GameManager.instance.SecondsBetweenTurns);
+            currentPlayer.ChangeState(Player.AIStates.TRADING);
         }
         else
         {
-            bool canRollDice = GameManager.instance.RolledADouble && currentplayer.ReadMoney >= 0;
-            bool canEndTurn = !GameManager.instance.RolledADouble && currentplayer.ReadMoney >= 0;
+            bool canRollDice = GameManager.instance.RolledADouble && currentPlayer.ReadMoney >= 0;
+            bool canEndTurn = !GameManager.instance.RolledADouble && currentPlayer.ReadMoney >= 0;
             //HUD/UI для игрока + проверка на дубль
-            OnShowHumanPanel.Invoke(true, canRollDice, canEndTurn);//
+            bool jailFreeChanceCard = currentPlayer.HasChanceJailFreeCard;
+            bool jailFreeCommunityCard = currentPlayer.HasCommunityJailFreeCard;
+            OnShowHumanPanel.Invoke(true, canRollDice, canEndTurn, jailFreeChanceCard, jailFreeCommunityCard);
         }
     }
 
-    void ContinueGame()
-    {
-        //ЕСЛИ ПОСЛЕДНИЙ БРОСОК ДУБЛЬ -
-        if (GameManager.instance.RolledADouble)
-        {
-            //-БРОСАЙ СНОВА
-            GameManager.instance.RollDice();
-        }
-        else//ЕСЛИ НЕТ - ПЕРЕХОД ХОДА
-        {
+    //void ContinueGame()
+    //{
+    //    //ЕСЛИ ПОСЛЕДНИЙ БРОСОК ДУБЛЬ -
+    //    if (GameManager.instance.RolledADouble)
+    //    {
+    //        //-БРОСАЙ СНОВА
+    //        GameManager.instance.RollDice();
+    //    }
+    //    else//ЕСЛИ НЕТ - ПЕРЕХОД ХОДА
+    //    {
                         
-            GameManager.instance.SwitchPlayer();
-        }
+    //        GameManager.instance.SwitchPlayer();
+    //    }
 
-    }
+    //}
 
     int CalculatePropertyRent()
     {
@@ -523,7 +528,7 @@ public class MonopolyNode : MonoBehaviour
 
     int CalculateUtilityRent()
     {
-        int[] lastRolledDice = GameManager.instance.LastRolledDice();
+        List<int> lastRolledDice = GameManager.instance.LastRolledDice();
 
         int result = 0;
         var (list, areAllSame) = MonopolyBoard.instance.PlayerHasAllNodesOfSet(this);
@@ -648,8 +653,19 @@ public class MonopolyNode : MonoBehaviour
 
         //RESET PROPERTY от OWNER
         owner.RemoveProperty(this);
-        owner.nickname = "???";
+        owner.ActivateArrowSelector(false);//DESIGN МОЖНО СДЕЛАТЬ ТУТ КАРТИНКУ - БАНКРОТ
+        owner = null;
         //UPDATE UI/HUD
         OnOwnerUpdated();
+    }
+
+    //==============ТОРГОВЛЯ===============
+
+    //------------ИЗМЕНИТЬ ВЛАДЕЛЬЦА КАРТОЧЕК--------------
+    public void ChangeOwner(Player newOwner)
+    {
+        owner.RemoveProperty(this);
+        newOwner.AddProperty(this);
+        SetOwner(newOwner);
     }
 }

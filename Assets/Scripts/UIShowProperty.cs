@@ -84,7 +84,7 @@ public class UIShowProperty : MonoBehaviour
         else
         {
             propertyPriceText.text = "опхнапеярх гю <color=red>" + node.price + "BYN";
-            buyPropertyButton.interactable = true;
+            buyPropertyButton.interactable = false;
         }
         //ямювюкю гюонкмъеряъ йнмремр, гюрел онйюгшбюч оюмекэ:
         propertyUIPanel.SetActive(true);

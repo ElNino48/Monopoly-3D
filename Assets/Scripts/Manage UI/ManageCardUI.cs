@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class ManageCardUI : MonoBehaviour
 {
+    [SerializeField] TMP_Text propertyNameText;
+
     [SerializeField] Image colorField;
     [SerializeField] GameObject[] buildings;
     [SerializeField] GameObject mortgageImage;
@@ -14,6 +16,9 @@ public class ManageCardUI : MonoBehaviour
     [SerializeField] TMP_Text unMortgageValueText;
     [SerializeField] Button mortgageButton, unMortgageButton;
 
+    [SerializeField] Image iconImage;
+    [SerializeField] Sprite houseSprite, railroadSprite, utilitySprite;
+    
     Player playerReference;
     MonopolyNode nodeReference;
     ManagePropertyUI propertyReference;
@@ -46,6 +51,25 @@ public class ManageCardUI : MonoBehaviour
         mortgageButton.interactable = !node.IsMortgaged;
         unMortgageButton.gameObject.SetActive(node.IsMortgaged);
         unMortgageButton.interactable = node.IsMortgaged;
+
+        //ЗАГРУЗИТЬ ИКОНКИ
+        switch (nodeReference.type)
+        {
+            case MonopolyNodeType.Property:
+                iconImage.sprite = houseSprite;
+                iconImage.color = Color.blue;//ICON
+            break;
+            case MonopolyNodeType.Railroad:
+                iconImage.sprite = railroadSprite;
+                iconImage.color = Color.white;//ICON
+            break;
+            case MonopolyNodeType.Utility:
+                iconImage.sprite = utilitySprite;
+                iconImage.color = Color.black;//ICON
+            break;
+        }
+        //УСТАНОВИТЬ ИМЯ КАРТОЧКИ
+        propertyNameText.text = nodeReference.name;
     }
 
     public void MortgageButton()
@@ -53,11 +77,15 @@ public class ManageCardUI : MonoBehaviour
         if (!propertyReference.CheckIfMortgageAllowed()) //if not allowed:
         {
             //ERROR MSG "Нельзя заложить потому что есть домики"
+            string message = "Нельзя заложить потому что есть домики!";
+            ManageUI.instance.UpdateSystemMessage(message);
             return;
         }
         if(nodeReference.IsMortgaged)
         //ERROR сообщение об ошибке "Уже заложено" (на всякий, потому что кнопка должна вырубаться после юза"
         {
+            string message = "Уже заложено!";
+            ManageUI.instance.UpdateSystemMessage(message);
             return;
         }
         playerReference.CollectMoney(nodeReference.MortgageProperty());
@@ -84,11 +112,15 @@ public class ManageCardUI : MonoBehaviour
         if (!nodeReference.IsMortgaged)
         //ERROR сообщение об ошибке или чё то типо того
         {
+            string message = "Уже выкуплено!";
+            ManageUI.instance.UpdateSystemMessage(message);
             return;
         }
         if(playerReference.ReadMoney < nodeReference.MortgagedValue)
         {
             //ERROR "НЕТ ДЕНЕГ ЧТОБЫ ВЫКУПИТЬ КАРТОЧКУ"
+            string message = "Недостаточно средств!";
+            ManageUI.instance.UpdateSystemMessage(message);
             return;
         }
         playerReference.PayMoney(nodeReference.MortgagedValue);

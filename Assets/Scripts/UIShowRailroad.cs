@@ -77,7 +77,7 @@ public class UIShowRailroad : MonoBehaviour
         else
         {
             propertyPriceText.text = "опхнапеярх гю <color=red>" + node.price + "BYN";
-            buyRailroadButton.interactable = true;
+            buyRailroadButton.interactable = false;
         }
         //ямювюкю гюонкмъеряъ йнмремр, гюрел онйюгшбюч оюмекэ:
         railroadUIPanel.SetActive(true);

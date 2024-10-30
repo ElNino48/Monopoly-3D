@@ -15,6 +15,8 @@ public class ManagePropertyUI : MonoBehaviour
     Player playerReference;
     List<MonopolyNode> nodesInSet = new List<MonopolyNode>();
     List<GameObject> cardsInSet = new List<GameObject>();
+    [SerializeField] GameObject scrollableObjectInPrefab;
+    ScrollRect scrollAbility;
     public Button GetBuyHouseButton => buyHouseButton;
     public void SetBuyHouseButton(bool isInteractive)
     {
@@ -23,10 +25,16 @@ public class ManagePropertyUI : MonoBehaviour
     //СЕТ КАРТОЧЕК ОДНОГО ЦВЕТА
     public void SetProperty(List<MonopolyNode> nodes, Player owner)
     {
+
+        scrollAbility = scrollableObjectInPrefab.GetComponent<ScrollRect>();
+        scrollAbility.enabled = false;
         playerReference = owner;
         //nodeInSet.AddRange(nodes); == //nodesInSet = nodes;
         nodesInSet.AddRange(nodes);
-
+        if (nodesInSet.Count > 3)
+        {
+            scrollAbility.enabled = true;
+        }
         for (int i = 0; i < nodesInSet.Count; i++)//генерация карточки в менеджменте и т.д.
         {
             GameObject newCard = Instantiate(cardPrefab, cardHolder,false);//СОЗДАНИЕ КАРТОЧКИ, ПРИВЗЯКА К cardHolder и Local Space (для Scaling'а)
@@ -42,25 +50,36 @@ public class ManagePropertyUI : MonoBehaviour
         sellHouseButton.interactable = CheckIfSellAllowed();
 
         buyHouseButtonText.text = ("ПОСТРОИТЬ <color=red>-" + nodesInSet[0].houseCost + "BYN");//DESIGN 
-        sellHouseButtonText.text = ("ПРОДАТЬ <color=green>+" + nodesInSet[0].houseCost + "BYN");//DESIGN 
+        sellHouseButtonText.text = ("ПРОДАТЬ <color=green>+" + nodesInSet[0].houseCost/2 + "BYN");//DESIGN 
+        if (nodes[0].type != MonopolyNodeType.Property)
+        {
+            buyHouseButton.interactable = false;
+            sellHouseButton.interactable = false;
+        }
+
     }
 
     public void BuyHouseButton()
     {
         if (!CheckIfBuyAllowed())
         {
-            //ERROR MSG "Нельзя купить дом потому что одна из карточек заложена"
+            //ERROR MSG
+            string message = "Нельзя купить дом потому что одна из карточек <color=red>заложена";
+            ManageUI.instance.UpdateSystemMessage(message);
             return;
         }
         if (playerReference.CanAffordHouse(nodesInSet[0].houseCost))
         {
             playerReference.BuildHousesOrHotelEvenly(nodesInSet);
+            string message = "Дом построен.";
+            ManageUI.instance.UpdateSystemMessage(message);
             UpdateHouseVisuals();
         }
         else
         {
             //НЕ МОЖЕТ КУПИТЬ - НЕТ ДЕНЕГ
-            Debug.Log("НЕ ХВАТАЕТ ДЕНЕГ");
+            string message = "Недостаточно средств!";
+            ManageUI.instance.UpdateSystemMessage(message);
         }
         sellHouseButton.interactable = CheckIfSellAllowed();
         ManageUI.instance.UpdateMoneyText();

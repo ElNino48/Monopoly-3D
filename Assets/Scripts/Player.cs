@@ -23,9 +23,14 @@ public class Player
     [SerializeField] List<MonopolyNode> myMonopolyNodes = new List<MonopolyNode>();
     public List<MonopolyNode> GetMonopolyNodes => myMonopolyNodes;
 
+    bool hasChanceJailFreeCard, hasCommunityJailFreeCard;
+    public bool HasChanceJailFreeCard => hasChanceJailFreeCard;
+    public bool HasCommunityJailFreeCard => hasCommunityJailFreeCard;
+
+
     //PLAYER INFO
     PlayerInfo myInfo;
-
+    
     //UI Show Panel
     UIShowProperty uiShowPropertyInfo;
 
@@ -34,11 +39,20 @@ public class Player
     public static UpdateMessage OnUpdateMessage;
 
     //HUMAN UI
-    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn);
+    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn, bool hasChanceJailFreeCard, bool hasCommunityJailFreeCard);
     public static ShowHumanPanel OnShowHumanPanel;//каждый раз когда мы что-то делаем - происходит Invoke Human Panel 
 
     //AI
     int aiMoneySavity = 200;
+
+    //AI СОСТОЯНИЯ
+    public enum AIStates
+    {
+        IDLE,
+        TRADING
+    }
+
+    public AIStates aiState;
 
     //return некоторых статусов и информации
     public bool IsInJail => isInJail;
@@ -60,6 +74,7 @@ public class Player
 
     public void SetNewNode(MonopolyNode newNode)
     {
+        
         currentnode = newNode;
         //ПРОВЕРКИ НА:
         //игрок наступил на место, где можно делать активные действия 
@@ -73,7 +88,7 @@ public class Player
             //Если у ИИ есть заложенные карточки?
             UnMortgageProperties();
             //Может ли торговать, чтобы получить недостающие карточки (нужны все одного цвета чтобы стать монополистом и строить домики)
-
+            //TradingSystem.instance.FindMissingProperty(this);
         }
         
     }
@@ -83,14 +98,17 @@ public class Player
         money += amount;
 
         UIShowPanel.instance.UpdateBalance(money);
+       
         myInfo.SetPlayerCash(money);
         //ПРОВЕРКА (как и в MonopolyNode):
         if(playerType == PlayerType.HUMAN && GameManager.instance.GetCurrentPlayer == this)
         {
-            bool canRollDice = GameManager.instance.RolledADouble && ReadMoney >= 0;
-            bool canEndTurn = !GameManager.instance.RolledADouble && ReadMoney >= 0;
+            bool canRollDice = GameManager.instance.RolledADouble && ReadMoney >= 0 && GameManager.instance.HasRolledDice;
+            bool canEndTurn = !GameManager.instance.RolledADouble && ReadMoney >= 0 || (!GameManager.instance.HasRolledDice && ReadMoney >= 0);
             //HUD/UI для игрока + проверка на дубль
-            OnShowHumanPanel.Invoke(true, canRollDice, canEndTurn);//
+            ManageUI.instance.UpdateBottomMoneyText(money);
+
+            OnShowHumanPanel.Invoke(true, canRollDice, canEndTurn, hasChanceJailFreeCard, hasCommunityJailFreeCard);
         }
     }
 
@@ -104,7 +122,7 @@ public class Player
         money -= node.price;
         node.SetOwner(this);
         //ОБНОВЛЕНИЕ СЧЁТА БАЛАНСА
-        Debug.Log(money + "= money 1TYT");
+        //Debug.Log(money + "= money 1TYT");
         ManageUI.instance.UpdateBottomMoneyText(money);
         myInfo.SetPlayerCash(money);
         //uiShowPropertyInfo.SetPlayerMoneyBalance(money);
@@ -132,7 +150,7 @@ public class Player
             else
             {
                 //ВЫКЛЮЧИТЬ ВОЗМОЖНОСТЬ ЗАВЕРШИТЬ ХОД ИЛИ БРОСИТЬ ДАЙС
-                OnShowHumanPanel.Invoke(true, false, false);
+                OnShowHumanPanel.Invoke(true, false, false, hasChanceJailFreeCard, hasCommunityJailFreeCard);
             }
         }
         money -= rentAmount;
@@ -142,7 +160,7 @@ public class Player
         UIShowPanel.instance.UpdateBalance(money);
         myInfo.SetPlayerCash(money);
     }
-
+   
     internal void PayMoney(int taxAmount)
     {
         //(TAX) ЕСЛИ НЕТ ДОСТАТОЧНО ДЕНЕГ - залоги кредиты и прочая шляпа:
@@ -163,15 +181,16 @@ public class Player
         //Обновление UI для игрока и владельца и вообще
 
         UIShowPanel.instance.UpdateBalance(money);
+        ManageUI.instance.UpdateBottomMoneyText(money);
         myInfo.SetPlayerCash(money);
 
         //ПРОВЕРКА (как и в MonopolyNode):
         if (playerType == PlayerType.HUMAN && GameManager.instance.GetCurrentPlayer == this)
         {
-            bool canRollDice = GameManager.instance.RolledADouble && ReadMoney >= 0;
-            bool canEndTurn = !GameManager.instance.RolledADouble && ReadMoney >= 0;
+            bool canRollDice = GameManager.instance.RolledADouble && ReadMoney >= 0 && GameManager.instance.HasRolledDice;
+            bool canEndTurn = !GameManager.instance.RolledADouble && ReadMoney >= 0 || (!GameManager.instance.HasRolledDice && ReadMoney >= 0);
             //HUD/UI для игрока + проверка на дубль
-            OnShowHumanPanel.Invoke(true, canRollDice, canEndTurn);//
+            OnShowHumanPanel.Invoke(true, canRollDice, canEndTurn, hasChanceJailFreeCard, hasCommunityJailFreeCard);//
         }
     }
 
@@ -245,8 +264,9 @@ public class Player
         return allBuildings;
     }
 
-    void HandleInsufficientFunds(int amountToPay)
+    public void HandleInsufficientFunds(int amountToPay)
     {
+        //САМАЯ КОСЯЧНАЯ ФУНКЦИЯ:
         int housesToSell = 0;//Доступные домики на продажу
         int allHouses = 0;
         int propertiesToMortgage = 0;
@@ -301,10 +321,14 @@ public class Player
             }
         }
         //БАНКРОТ ЕСЛИ ПОПАЛ СЮДА:
-        Bankrupt();
+        if (playerType == PlayerType.AI)//fix166-3+
+                                        //Теперь только ИИ может обанкротится используя функцию "Автораспределения ресурсов"
+        {
+            Bankrupt();
+        }
     }
 
-    void Bankrupt()
+    internal void Bankrupt()
     {
         //УБРАТЬ ИГРОКА ИЗ ИГРЫ
 
@@ -317,14 +341,21 @@ public class Player
             myMonopolyNodes[i].ResetNode();
         }
 
+        if (hasChanceJailFreeCard)//fix#166+ карты не добавлялись в колоду после того как игрок(и ИИ) нажимал "Банкрот"
+        {
+            ChanceField.instance.AddBackJailFreeCard();
+        }
+        if (hasCommunityJailFreeCard)//fix#166+ карты не добавлялись в колоду после того как игрок(и ИИ) нажимал "Банкрот"
+        {
+            CommunityChest.instance.AddBackJailFreeCard();
+        }
+        //теперь карты вернутся в колоду после того как кто-то станет банкротом.
+
         //УДАЛИТЬ ИГРОКА
         GameManager.instance.RemovePlayer(this);
+        
     }
 
-    public void RemoveProperty(MonopolyNode node)
-    {
-        myMonopolyNodes.Remove(node);
-    }
 
     void UnMortgageProperties()//Для AI на данный момент 22.10 20:55
     {
@@ -423,7 +454,6 @@ public class Player
         }
     }
 
-    //public/internal?
     internal bool CanAffordHouse(int price)
     {
         if (playerType == PlayerType.AI)//AI
@@ -434,8 +464,85 @@ public class Player
         return money >= price;//HUMAN
     }
 
+    //-----------------SELECTOR РАМОЧКА ---------------------
     public void ActivateArrowSelector(bool active)
     {
         myInfo.ActivateArrow(active);
     }
+
+    //TRADING SYSTEM ТОРГОВЛЯ
+
+
+    //ДОБАВИТЬ ОДНИ И УБРАТЬ ДРУГИЕ КАРТОЧКИ ИЗ ВЛАДЕНИЯ
+    public void AddProperty(MonopolyNode node)
+    {
+        myMonopolyNodes.Add(node);
+        SortPropertiesByPrice();
+    }
+
+    public void RemoveProperty(MonopolyNode node)
+    {
+        myMonopolyNodes.Remove(node);
+        SortPropertiesByPrice();
+    }
+
+    //------НАСТРОЙКА СТАТУСОВ-------
+    public void ChangeState(AIStates state)
+    {
+        if(playerType == PlayerType.HUMAN)
+        {
+            return;
+        }
+
+        aiState = state;
+        switch (aiState)
+        {
+            case AIStates.IDLE:
+            {
+                //ПРОДОЛЖИТЬ
+                GameManager.instance.ContinueGame();
+                }
+            break;
+
+            case AIStates.TRADING:
+            {
+                //ПАУЗА ПОКА НЕ ЗАКОНЧИЛСЯ СТАТУС
+                //Debug.Log("TRADING status");
+                TradingSystem.instance.FindMissingProperty(this);
+            }
+            break;
+        }
+    }
+    
+    public void AddChanceJailFreeCard()
+    {
+        hasChanceJailFreeCard = true;
+    }
+    public void AddCommunityJailFreeCard()
+    {
+        hasCommunityJailFreeCard = true;
+    }
+    public void UseChanceJailFreeCard()//jailFreeChanceCard
+    {
+        if (!isInJail)
+        {
+            return;
+        }
+        SetFreeOfJail();
+        hasChanceJailFreeCard = false;
+        ChanceField.instance.AddBackJailFreeCard();
+        OnUpdateMessage.Invoke(nickname + " оправдан благодаря хорошему адвокату и был <color=green>освобожден</color> из-под стражи.");
+    }
+    public void UseCommunityJailFreeCard()//jailFreeCommunityCard
+    {
+        if (!isInJail)
+        {
+            return;
+        }
+        SetFreeOfJail();
+        hasCommunityJailFreeCard = false;
+        CommunityChest.instance.AddBackJailFreeCard();
+        OnUpdateMessage.Invoke(nickname + "таинственным образом был <color=green>освобожден</color> из-под стражи. (L.)");
+    }
+    
 }

@@ -13,6 +13,8 @@ public class UIShowPanel : MonoBehaviour
     [SerializeField] Button rollDiceButton;
     [SerializeField] Button endTurnButton;
     [SerializeField] int balanceBottom;
+    [SerializeField] Button jailFreeChanceButton;
+    [SerializeField] Button jailFreeCommunityButton;
 
     private void Awake()
     {
@@ -41,11 +43,13 @@ public class UIShowPanel : MonoBehaviour
         //GameManager.OnUpdateBottomBalance -= UpdateBalance;
     }
 
-    void ShowPanel(bool showPanel, bool enableRollDice, bool enableEndTurn)
+    void ShowPanel(bool showPanel, bool enableRollDice, bool enableEndTurn, bool hasChanceJailFreeCard, bool hasCommunityJailFreeCard)
     {
         humanPanel.SetActive(showPanel);
         rollDiceButton.interactable = enableRollDice;
         endTurnButton.interactable = enableEndTurn;
+        jailFreeChanceButton.gameObject.SetActive(hasChanceJailFreeCard);
+        jailFreeCommunityButton.gameObject.SetActive(hasCommunityJailFreeCard);//DESIGN можно сделать так чтобы показывать только одну или обе вместе в одну
     }
     public void UpdateBalance(int money)
     {

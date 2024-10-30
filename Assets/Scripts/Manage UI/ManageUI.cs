@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using TMPro;
+using UnityEngine.UI;
 
 public class ManageUI : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class ManageUI : MonoBehaviour
     Player playerReference;
     List<GameObject> propertyPrefabs = new List<GameObject>();
     [SerializeField] TMP_Text yourMoneyText, yourMoneyTextBottomPanel;
+    [SerializeField] TMP_Text systemMessageText;
+    [SerializeField] Button autoHandleFundsButton;
+    [SerializeField] Button bankruptButton;
+
+    public TMP_Text GetBottomTextPanel => yourMoneyTextBottomPanel;
 
     private void Awake()
     {
@@ -23,13 +29,39 @@ public class ManageUI : MonoBehaviour
     //ÍÀÑÒĞÎÉÊÈ ÄÎ
     private void Start()
     {
+        autoHandleFundsButton.interactable = false;
+        bankruptButton.interactable = true;
         managePanel.SetActive(false);
     }
 
     public void OpenManagmentPanel()//ÏĞÈÂßÇÀÒÜ Ê ÊÍÎÏÊÅ "ÌÅÍÅÄÆÌÅÍÒ"
     {
+        yourMoneyTextBottomPanel.gameObject.SetActive(true);
         playerReference = GameManager.instance.GetCurrentPlayer;
-        //ÏÎËÓ×ÈÒÜ ÂÑÅ ÊÀĞÒÎ×ÊÈ Â ÊÀ×ÅÑÒÂÅ ÑÅÒÎÂ ÊÀĞÒÎ×ÅÊ
+        CreateProperties();
+        
+        managePanel.SetActive(true);
+        UpdateMoneyText();
+    }
+
+    public void CloseManager()
+    {
+        managePanel.SetActive(false);
+        ClearProperties();
+    }//FIX ¹19+
+
+    void ClearProperties()
+    {
+        //Î×ÈÑÒÊÀ ÂÑÅÕ ÊÀĞÒÎ×ÅÊ Â ÌÅÍÅÄÆÌÅÍÒÅ ×ÒÎÁÛ ÍÅ ÑÎÇÄÀÂÀÒÜ ÄÓÁËÈÊÀÒÛ
+        for (int i = propertyPrefabs.Count - 1; i >= 0; i--)//FIX+ Ïğîáëåìà áûëà â i++/ íàäî i--
+        {
+            Destroy(propertyPrefabs[i]);
+        }
+        propertyPrefabs.Clear();
+    }//FIX ¹19+
+
+    void CreateProperties()
+    {
         List<MonopolyNode> processedSet = null;
 
         //PLAN=
@@ -58,39 +90,54 @@ public class ManageUI : MonoBehaviour
                 //propertySETprefab!!! *çàòóï*: +
                 // + Instantiate as GameObject à íå Object ÌÎÆÍÎ ÓÊÀÇÀÒÜ ßÂÍÎ (èíîãäà íå ğàáîòàåò ïàäëà)!!!
                 GameObject newPropertySet = Instantiate(propertySetPrefab, propertyUIGrid, false);
-                newPropertySet.GetComponent<ManagePropertyUI>().SetProperty(nodeSets,playerReference);
+                newPropertySet.GetComponent<ManagePropertyUI>().SetProperty(nodeSets, playerReference);
                 propertyPrefabs.Add(newPropertySet);
             }
         }
-        //ÑÍÀ×ÀËÀ ÇÀÏÎËÍÈÒÜ - ÇÀÒÅÌ ÎÒÊĞÛÒÜ ÏÀÍÅËÜ
-        managePanel.SetActive(true);
-        UpdateMoneyText();
     }
-
-    public void CloseManager()
-    {
-        managePanel.SetActive(false);
-        //Î×ÈÑÒÊÀ ÂÑÅÕ ÊÀĞÒÎ×ÅÊ Â ÌÅÍÅÄÆÌÅÍÒÅ ×ÒÎÁÛ ÍÅ ÑÎÇÄÀÂÀÒÜ ÄÓÁËÈÊÀÒÛ
-        for (int i = propertyPrefabs.Count-1; i >=0; i--)//FIX+ Ïğîáëåìà áûëà â i++/ íàäî i--
-        {
-            Destroy(propertyPrefabs[i]);
-        }
-        propertyPrefabs.Clear();
-    }//FIX ¹19
 
     public void UpdateMoneyText()
     {
         string showMoney = (playerReference.ReadMoney >= 0) ? ""+playerReference.ReadMoney : "<color=red>" + playerReference.ReadMoney;
+        if (playerReference.ReadMoney < 0)
+        {
+            autoHandleFundsButton.interactable = true;
+            bankruptButton.interactable = true;
+        }
+        else
+        {
+            autoHandleFundsButton.interactable = false;
+            //bankruptButton.interactable = false;
+        }
         yourMoneyText.text = "ÁÀÍÊ: " + showMoney + "BYN";
         yourMoneyTextBottomPanel.text = "ÁÀÍÊ: " + showMoney + "BYN";
     }
     
     public void UpdateBottomMoneyText(int money)
     {
-
-        Debug.Log(money + "= money 1TYT");
         //string showMoney = (playerReference.ReadMoney >= 0) ? "" + playerReference.ReadMoney : "<color=red>" + playerReference.ReadMoney;
         yourMoneyTextBottomPanel.text = "ÁÀÍÊ: " + money + "BYN";
     }
 
+    public void UpdateSystemMessage(string message)
+    {
+        systemMessageText.text = message;
+    }
+
+    public void AutoHandleFunds()//Âûçûâàåòñÿ êíîïêîé "Àâòîìàòè÷."
+    {
+        if (playerReference.ReadMoney > 0)
+        {
+            string message = "<br><br><br><color=red> Íè÷åãî íå ïğîèçîøëî. Íà ñ÷åòó ïîëîæèòåëüíûé áàëàíñ.</color>";
+            UpdateSystemMessage(message);
+            return;
+        }
+        playerReference.HandleInsufficientFunds(Mathf.Abs(playerReference.ReadMoney));//áåğó ïî ìîäóëş ïîñêîëüêó ÷èñëî ñ ìèíóñîì 
+        //ÎÁÍÎÂÈÒÜ UI
+        ClearProperties();
+        CreateProperties();
+        UpdateMoneyText();
+        //ÎÁÍÎÂÈÒÜ SYSTEM MSG
+
+    }
 }

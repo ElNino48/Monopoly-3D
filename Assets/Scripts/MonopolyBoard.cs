@@ -70,7 +70,7 @@ public class MonopolyBoard : MonoBehaviour
         }
         if(indexOfNextNodeType==-1)//аегноюямши бшунд
         {
-            Debug.Log("йкерйю ме мюидемю!");
+            //Debug.Log("йкерйю ме мюидемю!");
             return;
         }
 
@@ -79,6 +79,7 @@ public class MonopolyBoard : MonoBehaviour
 
     IEnumerator MovePlayerInSteps(int steps, Player player)
     {
+        yield return new WaitForSeconds(0.5f);
         int stepsLeft = steps;
         GameObject tokenToMove = player.MyToken;
         int indexOnBoard = route.IndexOf(player.MyMonopolyNode);
@@ -99,7 +100,7 @@ public class MonopolyBoard : MonoBehaviour
                 //Vector3 startPos = tokenToMove.transform.position;
                 Vector3 endPos = route[indexOnBoard].transform.position;
                 //оепелеыюч:
-                while (isMovedToNextNode(tokenToMove, endPos, 20))
+                while (isMovedToNextNode(tokenToMove, endPos, 10))
                 {
                     yield return null;
                 }

@@ -85,6 +85,8 @@ GameObject:
   m_Component:
   - component: {fileID: 478762948075088546}
   - component: {fileID: 3890370384597590231}
+  - component: {fileID: -792658478953204527}
+  - component: {fileID: 1728156797058599150}
   m_Layer: 0
   m_Name: Commumity Node
   m_TagString: Untagged
@@ -122,7 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 5
   propertyColorField: {fileID: 0}
-  name: COMMUNITY
+  name: "\u0421\u041E\u0411\u042B\u0422\u0418\u0415"
   nameText: {fileID: 4184421976389024766}
   price: 0
   houseCost: 0
@@ -139,6 +141,63 @@ MonoBehaviour:
   mortgageValue: 0
   ownerBar: {fileID: 0}
   ownerText: {fileID: 0}
+--- !u!114 &-792658478953204527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106235925207947647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f14e2d1efdf9c94d907e77af8771071, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1728156797058599150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106235925207947647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: -792658478953204527}
+          m_TargetAssemblyTypeName: CardHover, Assembly-CSharp
+          m_MethodName: OnMouseEnter
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: -792658478953204527}
+          m_TargetAssemblyTypeName: CardHover, Assembly-CSharp
+          m_MethodName: OnMouseExit
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &4660267072212232508
 GameObject:
   m_ObjectHideFlags: 0
@@ -204,17 +263,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: COMMUNITY
+  m_text: "\u0421\u041E\u0411\u042B\u0422\u0418\u0415"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d0ededcdf7bf81f45979453ede0ea81c, type: 2}
-  m_sharedMaterial: {fileID: -1377794437128812979, guid: d0ededcdf7bf81f45979453ede0ea81c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8a9930e1f0ff7f24db16b2004a5fbff1, type: 2}
+  m_sharedMaterial: {fileID: -3592748298830931750, guid: 8a9930e1f0ff7f24db16b2004a5fbff1, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278255392
-  m_fontColor: {r: 0.12390661, g: 1, b: 0, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -235,13 +294,13 @@ MonoBehaviour:
   m_fontSizeBase: 0.4
   m_fontWeight: 400
   m_enableAutoSizing: 0
-  m_fontSizeMin: 18
+  m_fontSizeMin: 0
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: -10
+  m_characterSpacing: -4
   m_wordSpacing: 0
   m_lineSpacing: -17.87
   m_lineSpacingMax: 0
@@ -267,7 +326,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0.16909981, y: 0, z: 0.17916393, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

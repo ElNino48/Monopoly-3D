@@ -67,7 +67,7 @@ public class UIShowUtility : MonoBehaviour
         else
         {
             utilityPriceText.text = "опхнапеярх гю <color=red>" + node.price + "BYN";
-            buyUtilityButton.interactable = true;
+            buyUtilityButton.interactable = false;
         }
         //ямювюкю гюонкмъеряъ йнмремр, гюрел онйюгшбюч оюмекэ:
         utilityUIPanel.SetActive(true);

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93459ebd28813f241aca496f35a50b48, type: 3}
   m_Name: 15 Lottery Win
   m_EditorClassIdentifier: 
-  descriptionOnCard: "\u0420\u0430\u0437\u043D\u044B\u043C\u0438 \u0441\u0445\u0435\u043C\u0430\u043C\u0438
-    \u0412\u044B \u043E\u0431\u044B\u0433\u0440\u0430\u043B\u0438 \u044D\u0442\u0443
-    \u0440\u0430\u043A\u0435\u0442\u043A\u0443. \u0412\u0430\u0448 \u0432\u044B\u0438\u0433\u0440\u044B\u0448
-    \u0441\u043E\u0441\u0442\u0430\u0432\u0438\u043B <br><br><b><color=green>+100BYN</b></color>."
+  descriptionOnCard: "+100BYN</b></color>.\u0431\u044B\u0433\u0440\u0430\u043B\u0438
+    \u044D\u0442\u0443 \u0440\u0430\u043A\u0435\u0442\u043A\u0443. \u0412\u0430\u0448
+    \u0432\u044B\u0438\u0433\u0440\u044B\u0448 \u0441\u043E\u0441\u0442\u0430\u0432\u0438\u043B
+    <br><br><b><color=green>+100BYN</b></color>."
   rewardMoney: 100
   penaltyMoney: 0
   moveToBoardIndex: -1

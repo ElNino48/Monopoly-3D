@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class ChanceField : MonoBehaviour
 {
+    //singletone:
+    public static ChanceField instance;
+
     [SerializeField] List<SCR_ChanceCard> cards = new List<SCR_ChanceCard>();
     [SerializeField] TMP_Text cardText;
     [SerializeField] GameObject cardHolderBackground;
@@ -16,12 +19,13 @@ public class ChanceField : MonoBehaviour
     List<SCR_ChanceCard> cardDeck = new List<SCR_ChanceCard>();//КОЛОДА КАРТОЧЕК
     List<SCR_ChanceCard> usedCardDeck = new List<SCR_ChanceCard>();//КОЛОДА СБРОСА
 
+    SCR_ChanceCard jailFreeCard;
     //ИНФА О ТЕКУЩЕЙ КАРТОЧКЕ И ТЕКУЩЕМ ИГРОКЕ
     SCR_ChanceCard pickedCard;
     Player currentPlayer;
 
     //HUMAN UI
-    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn);
+    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn, bool hasChanceJailFreeCard, bool hasCommunityJailFreeCard);
     public static ShowHumanPanel OnShowHumanPanel;//каждый раз когда мы что-то делаем - происходит Invoke Human Panel 
 
     private void OnEnable()
@@ -32,6 +36,11 @@ public class ChanceField : MonoBehaviour
     private void OnDisable()
     {
         MonopolyNode.OnDrawChanceCard -= DrawCard;
+    }
+
+    private void Awake()
+    {
+        instance = this;
     }
     private void Start()
     {
@@ -57,7 +66,16 @@ public class ChanceField : MonoBehaviour
         //ВЗЯТЬ КАРТОЧКУ
         pickedCard = cardDeck[0];//Выбрал карточку
         cardDeck.RemoveAt(0);//Убрал использованную карточку из колоды
-        usedCardDeck.Add(pickedCard);//Закинул использованную карточку в сброс
+
+        if (pickedCard == jailFreeCard)
+        {
+            jailFreeCard = pickedCard;
+        }
+        else
+        {
+            usedCardDeck.Add(pickedCard);//Закинул использованную карточку в сброс
+        }
+        
         if (cardDeck.Count == 0)
         {
             //НЕ ОСТАЛОСЬ КАРТОЧЕК = НУЖНО ВЕРНУТЬ СБРОС И ЗАШАФЛИТЬ
@@ -71,6 +89,7 @@ public class ChanceField : MonoBehaviour
         //ПОКАЗАТЬ ЭТУ КАРТОЧКУ
         cardHolderBackground.SetActive(true);
 
+        //Debug.Log("Chance set actvie?.");
         //ВСТАВИТЬ ТЕКСТ ОПИСАНИЯ КАРТОЧКИ
         cardText.text = pickedCard.descriptionOnCard;
 
@@ -150,7 +169,7 @@ public class ChanceField : MonoBehaviour
         }
         else if (pickedCard.jailFreeCard)// КАРТОЧКА "ВЫЙТИ ИЗ ТУРМЫ"
         {
-
+            currentPlayer.AddChanceJailFreeCard();
         }
         else if (pickedCard.moveStepsBackwards != 0)
         {
@@ -176,22 +195,28 @@ public class ChanceField : MonoBehaviour
     {
         if (currentPlayer.playerType == Player.PlayerType.AI)
         {
-            if (!isMoving && GameManager.instance.RolledADouble)
+            if (!isMoving)
             {
-                GameManager.instance.RollDice();
-            }
-            else if (!isMoving && !GameManager.instance.RolledADouble)
-            {
-                GameManager.instance.SwitchPlayer();
+                GameManager.instance.Continue();
             }
         }
         else //HUMAN INPUT
         {
             if (!isMoving)
             {
-                OnShowHumanPanel.Invoke(true, GameManager.instance.RolledADouble, !GameManager.instance.RolledADouble);
+                bool jailFreeChanceCard = currentPlayer.HasChanceJailFreeCard;
+                bool jailFreeCommunityCard = currentPlayer.HasCommunityJailFreeCard;
+                OnShowHumanPanel.Invoke(true, 
+                    GameManager.instance.RolledADouble, !GameManager.instance.RolledADouble,
+                    jailFreeChanceCard,jailFreeCommunityCard);
                 //ЕСЛИ ДУБЛЬ- Кнопка РОЛЛ активна, если ДУБЛЬ - кнопка КОНЕЦ ХОДА неактивна и наоборот
             }
         }
+    }
+
+    public void AddBackJailFreeCard()
+    {
+        usedCardDeck.Add(jailFreeCard);
+        jailFreeCard = null;
     }
 }

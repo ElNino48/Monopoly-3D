@@ -7,6 +7,9 @@ using UnityEngine.UI;
 
 public class CommunityChest : MonoBehaviour
 {
+    //singletone:
+    public static CommunityChest instance;
+
     [SerializeField] List<SCR_CommunityCard> cards = new List<SCR_CommunityCard>();
     [SerializeField] TMP_Text cardText;
     [SerializeField] GameObject cardHolderBackground;
@@ -17,11 +20,12 @@ public class CommunityChest : MonoBehaviour
     List<SCR_CommunityCard> usedCardDeck = new List<SCR_CommunityCard>();//КОЛОДА СБРОСА
 
     //ИНФА О ТЕКУЩЕЙ КАРТОЧКЕ И ТЕКУЩЕМ ИГРОКЕ
+    SCR_CommunityCard jailFreeCard;
     SCR_CommunityCard pickedCard;
     Player currentPlayer;
 
     //HUMAN UI
-    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn);
+    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn, bool hasChanceJailFreeCard, bool hasCommunityJailFreeCard);
     public static ShowHumanPanel OnShowHumanPanel;//каждый раз когда мы что-то делаем - происходит Invoke Human Panel 
 
     private void OnEnable()
@@ -34,6 +38,10 @@ public class CommunityChest : MonoBehaviour
         MonopolyNode.OnDrawCommunityCard -= DrawCard;
     }
 
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         cardHolderBackground.SetActive(false);
@@ -61,9 +69,18 @@ public class CommunityChest : MonoBehaviour
         pickedCard = cardDeck[0];//Выбрал карточку
         cardDeck.RemoveAt(0);//Убрал использованную карточку из колоды
         usedCardDeck.Add(pickedCard);//Закинул использованную карточку в сброс
-        if(cardDeck.Count==0)
+        if (pickedCard == jailFreeCard)
+        {
+            jailFreeCard = pickedCard;
+        }
+        else
+        {
+            usedCardDeck.Add(pickedCard);//Закинул использованную карточку в сброс
+        }
+        if (cardDeck.Count==0)
         {
             //НЕ ОСТАЛОСЬ КАРТОЧЕК = НУЖНО ВЕРНУТЬ СБРОС И ЗАШАФЛИТЬ
+            //Debug.Log("Колода зашафлена");
             cardDeck.AddRange(usedCardDeck);
             usedCardDeck.Clear();
             ShuffleCards();
@@ -155,7 +172,7 @@ public class CommunityChest : MonoBehaviour
         }
         else if (pickedCard.jailFreeCard)// КАРТОЧКА "ВЫЙТИ ИЗ ТУРМЫ"
         {
-
+            currentPlayer.AddCommunityJailFreeCard();
         }
         cardHolderBackground.SetActive(false);
         ContinueGame(isMoving);
@@ -165,22 +182,26 @@ public class CommunityChest : MonoBehaviour
     {   
         if(currentPlayer.playerType == Player.PlayerType.AI)
         {
-            if(!isMoving && GameManager.instance.RolledADouble)
+            if (!isMoving)
             {
-                GameManager.instance.RollDice();
-            }
-            else if(!isMoving && !GameManager.instance.RolledADouble)
-            {
-                GameManager.instance.SwitchPlayer();
+                GameManager.instance.Continue();
             }
         }
         else //HUMAN INPUT
         {
             if (!isMoving)
             {
-                OnShowHumanPanel.Invoke(true, GameManager.instance.RolledADouble, !GameManager.instance.RolledADouble);
+                bool jailFreeChanceCard = currentPlayer.HasChanceJailFreeCard;
+                bool jailFreeCommunityCard = currentPlayer.HasCommunityJailFreeCard;
+                OnShowHumanPanel.Invoke(true, GameManager.instance.RolledADouble, !GameManager.instance.RolledADouble,
+                    jailFreeChanceCard, jailFreeCommunityCard);
                 //ЕСЛИ ДУБЛЬ- Кнопка РОЛЛ активна, если ДУБЛЬ - кнопка КОНЕЦ ХОДА неактивна и наоборот
             }
         }
+    }
+    public void AddBackJailFreeCard()
+    {
+        usedCardDeck.Add(jailFreeCard);
+        jailFreeCard = null;
     }
 }

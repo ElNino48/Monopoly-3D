@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-//
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
@@ -23,15 +23,25 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject playerInfoPrefab;
     [SerializeField] Transform playerUI;//ÄËß ÒÎÃÎ ×ÒÎÁÛ playerInfoPrefab'û ÑÒÀËÈ ĞÎÄÈÒÅËßÌÈ 
     [SerializeField] List<GameObject> playerTokenList = new List<GameObject>();
-    
+
+    [Header("Game Over")]
+    [SerializeField] GameObject gameOverPanel;
+    //[SerializeField] TMP_Text winnerName;
+
+    [Header("Dice")]
+    [SerializeField] Dice physicalDice1;
+    [SerializeField] Dice physicalDice2;
     //ÁĞÎÑÎÊ ÊÎÑÒÅÉ
 
-    int[] rolledDice;
+    List<int> rolledDice = new List<int>();
     bool isDoubleRolled;
+    bool hasRolledDice;
+    public bool HasRolledDice => hasRolledDice;
     public bool RolledADouble => isDoubleRolled;
     public void ResetRolledADouble() => isDoubleRolled = false;
     int doubleRollCount;
     int taxPool = 0;
+    
     //ÏĞÎØÅË ×ÅĞÅÇ GO - ÏÎËÓ×È 500
     public int GetGoMoney => goMoney;
     public float SecondsBetweenTurns => secondsBetweenTurns;
@@ -43,7 +53,7 @@ public class GameManager : MonoBehaviour
     public static UpdateMessage OnUpdateMessage;
 
     //HUMAN UI
-    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn);
+    public delegate void ShowHumanPanel(bool activatePanel, bool activateRollDice, bool activateEndTurn, bool hasChanceJailFreeCard, bool hasCommunityJailFreeCard);
     public static ShowHumanPanel OnShowHumanPanel;//êàæäûé ğàç êîãäà ìû ÷òî-òî äåëàåì - ïğîèñõîäèò Invoke Human Panel 
 
     //public delegate void UpdateBottomBalance(int money);
@@ -59,63 +69,148 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Initialize();
-        if(playerList[currentPlayer].playerType == Player.PlayerType.AI)
+        currentPlayer = Random.Range(0, playerList.Count);//Ğàíäîìíûé èãğîê íà÷èíàåò èãğó.
+        gameOverPanel.SetActive(false);
+        Initialize(); 
+        CameraSwitcher.instance.SwitchToTopDown();
+        StartCoroutine(StartGame());
+        OnUpdateMessage.Invoke("Äà íà÷íåòñÿ <b><color=black>áèòâà!");
+    }
+    IEnumerator StartGame()
+    {
+        yield return new WaitForSeconds(3f);
+        if (playerList[currentPlayer].playerType == Player.PlayerType.AI)
         {
-            RollDice();
+            //RollDice();
+            RollPhysicalDices();
         }
         else
         {
             //UI äëÿ æèâîãî èãğîêà
+            OnShowHumanPanel.Invoke(true, true, false, false, false);
         }
     }
-
     private void Initialize()
     {
-        for (int i = 0; i < playerList.Count; i++)
+        if (GameSettings.settingsList.Count == 0) 
         {
+            //Debug.LogError("Ñòàğò èãğû ÒÎËÜÊÎ èç Ãëàâíîãî ìåíş!");
+            return;
+        }
+        //ÑÎÇÄÀÍÈÅ ÈÃĞÎÊÎÂ(îñíîâûâàÿñü íà äàííûõ ìåíş)
+        foreach (var setting in GameSettings.settingsList)
+        {
+            Player player = new Player();
+            player.nickname = setting.playerName;
+            player.playerType = (Player.PlayerType)setting.selectedType;
+            playerList.Add(player);
+
             GameObject infoObject = Instantiate(playerInfoPrefab, playerUI, false);//false - Local
             PlayerInfo info = infoObject.GetComponent<PlayerInfo>();
-
-            //Ğàíäîìíûé òîêåí:
-            int randomIndex = Random.Range(0, playerTokenList.Count);
-            GameObject newToken = Instantiate(playerTokenList[randomIndex], gameBoard.route[0].transform.position, Quaternion.identity);
-
-            playerList[i].Initialize(gameBoard.route[0], startMoney, info, newToken);
+            GameObject newToken = Instantiate(playerTokenList[setting.selectedColor],
+                gameBoard.route[0].transform.position, Quaternion.identity);
+            player.Initialize(gameBoard.route[0], startMoney, info, newToken);
         }
+
+        //for (int i = 0; i < playerList.Count; i++)
+        //{
+        //    GameObject infoObject = Instantiate(playerInfoPrefab, playerUI, false);//false - Local
+        //    PlayerInfo info = infoObject.GetComponent<PlayerInfo>();
+
+        //    //Ğàíäîìíûé òîêåí:
+        //    int randomIndex = Random.Range(0, playerTokenList.Count);
+        //    GameObject newToken = Instantiate(playerTokenList[randomIndex], gameBoard.route[0].transform.position, Quaternion.identity);
+
+        //    playerList[i].Initialize(gameBoard.route[0], startMoney, info, newToken);
+        //}
+
+
         playerList[currentPlayer].ActivateArrowSelector(true);
 
         if(playerList[currentPlayer].playerType == Player.PlayerType.HUMAN)
         {
+            bool jailFreeChanceCard = playerList[currentPlayer].HasChanceJailFreeCard;
+            bool jailFreeCommunityCard = playerList[currentPlayer].HasCommunityJailFreeCard;
             //OnUpdateBottomBalance.Invoke(startMoney);
-            OnShowHumanPanel.Invoke(true, true, false);
+            OnShowHumanPanel.Invoke(true, true, false, jailFreeChanceCard, jailFreeCommunityCard);
         }
         else
         {
+            bool jailFreeChanceCard = playerList[currentPlayer].HasChanceJailFreeCard;
+            bool jailFreeCommunityCard = playerList[currentPlayer].HasCommunityJailFreeCard;
             //OnUpdateBottomBalance.Invoke(startMoney);
-            OnShowHumanPanel.Invoke(false, false, false);
+            ManageUI.instance.GetBottomTextPanel.gameObject.SetActive(false);
+            OnShowHumanPanel.Invoke(false, false, false, jailFreeChanceCard, jailFreeCommunityCard);
         }
     }
 
-    public void RollDice()//ĞÅÀÊÖÈß ÍÀ ÍÀÆÀÒÈÅ ÊÍÎÏÊÈ ÈÃĞÎÊÎÌ ÈËÈ ÈÈ
+    //ÑÎÅÄÈÍÈÒÜ ÔÈÇÈ×ÅÑÊÈÉ ÄÀÉÑ Ê ÑÈÑÒÅÌÅ
+    public void RollPhysicalDices()
     {
+        //if (!hasRolledDice)
+        //{
+            CheckForJailFreeCards();
+            rolledDice.Clear();
+            physicalDice1.RollPhysicalDice();
+            physicalDice2.RollPhysicalDice();
+            hasRolledDice = true;
+            CameraSwitcher.instance.SwitchToDice();
+            
+            //ÏÎÊÀÇÀÒÜ/ÑÊĞÛÒÜ HUD/UI
+            if (playerList[currentPlayer].playerType == Player.PlayerType.HUMAN)
+            {
+                //OnUpdateBottomBalance.Invoke(playerList[currentPlayer].ReadMoney);
+                bool jailFreeChanceCard = playerList[currentPlayer].HasChanceJailFreeCard;
+                bool jailFreeCommunityCard = playerList[currentPlayer].HasCommunityJailFreeCard;
+                OnShowHumanPanel.Invoke(true, false, false, jailFreeChanceCard, jailFreeCommunityCard);
+            }
+        //}
+    }
 
-        bool isAllowedToMove = true;
-
-        //RESET ÏÎÑËÅÄÍÈÉ ĞÎËË
-        rolledDice = new int[2];
-
-        //ÑÎÕĞÀÍÈÒÜ ĞÎËË
-        rolledDice[0] = Random.Range(1, 7);
-        rolledDice[1] = Random.Range(1, 7);
-        Debug.Log("Ğåçóëüòàò áğîñêà: " + rolledDice[0] + "+" + rolledDice[1]);
-
-        //DEBUG
-        if (alwaysDoubleRoll)
+    void CheckForJailFreeCards()
+    {
+        if (playerList[currentPlayer].IsInJail && playerList[currentPlayer].playerType == Player.PlayerType.AI)
         {
-            rolledDice[0] = 0;
-            rolledDice[1] = 1;
+            if (playerList[currentPlayer].HasChanceJailFreeCard)
+            {
+                playerList[currentPlayer].UseChanceJailFreeCard();
+            }
+            else if (playerList[currentPlayer].HasCommunityJailFreeCard)
+            {
+                playerList[currentPlayer].UseCommunityJailFreeCard();
+            }
         }
+    }
+
+    public void ReportDiceRolled(int diceValue)
+    {
+        rolledDice.Add(diceValue);
+        if (rolledDice.Count == 2)
+        {
+            RollDice();//2D
+        }
+    }
+
+    private void RollDice()//ĞÅÀÊÖÈß ÍÀ ÍÀÆÀÒÈÅ ÊÍÎÏÊÈ ÈÃĞÎÊÎÌ ÈËÈ ÈÈ //rolldice = private + //rollphysical = public
+    {
+        bool isAllowedToMove = true;
+        hasRolledDice = true;
+        //ÓÆÅ Â ÒÓĞÌÅ?
+        
+        //    //RESET ÏÎÑËÅÄÍÈÉ ĞÎËË
+        //    rolledDice = new int[2];
+
+        ////ÑÎÕĞÀÍÈÒÜ ĞÎËË
+        //rolledDice[0] = Random.Range(1, 7);
+        //rolledDice[1] = Random.Range(1, 7);
+        //Debug.Log("Ğåçóëüòàò áğîñêà: " + rolledDice[0] + "+" + rolledDice[1]);
+
+        ////DEBUG
+        //if (alwaysDoubleRoll)
+        //{
+        //    rolledDice[0] = 2;
+        //    rolledDice[1] = 2;
+        //}
 
         //ÏĞÎÂÅĞÊÀ ÍÀ ÄÓÁËÜ
         isDoubleRolled = rolledDice[0] == rolledDice[1];
@@ -151,7 +246,7 @@ public class GameManager : MonoBehaviour
         else//ÍÅ Â ÒÓĞÌÅ ÏÎÊÀ ×ÒÎ
         //ÂÛÊÈÍÓË 3 - Â ÒÓĞÌÓ
         {
-            Debug.Log("äóáëåé: "+(doubleRollCount+1));
+            //Debug.Log("äóáëåé: "+(doubleRollCount+1));
             //ÎÁÍÓËÅÍÈÅ Ñ×ÅÒ×ÈÊÀ ÄÓÁËÅÉ
             if (!isDoubleRolled)
             {
@@ -194,17 +289,11 @@ public class GameManager : MonoBehaviour
             OnUpdateMessage.Invoke(playerList[currentPlayer].nickname + " àğåñòîâàí è ïğîïóñêàåò õîä.");//DESIGN
             StartCoroutine(DelayBetweenSwitchPlayer());//Ê ÑÌÅÍÅ ÈÃĞÎÊÀ ÄÎÁÀÂËÅÍ ÄÈËÅÉ Â 3 ÑÅÊÓÍÄÛ
         }
-
-        //ÏÎÊÀÇÀÒÜ/ÑÊĞÛÒÜ HUD/UI
-        if (playerList[currentPlayer].playerType == Player.PlayerType.HUMAN)
-        {
-            //OnUpdateBottomBalance.Invoke(playerList[currentPlayer].ReadMoney);
-            OnShowHumanPanel.Invoke(true, false, false);
-        }
     }
 
     IEnumerator DelayBeforeMove(int rolledDice)
     {
+        CameraSwitcher.instance.SwitchToPlayerFollow(playerList[currentPlayer].MyToken.transform);
         yield return new WaitForSeconds(secondsBetweenTurns);
         //ÅÑËÈ ÌÎÆÅÌ ÕÎÄÈÒÜ - ÕÎÄÈÌ
         gameBoard.MovePlayerToken(rolledDice, playerList[currentPlayer]);
@@ -218,12 +307,14 @@ public class GameManager : MonoBehaviour
     }
 
     public void SwitchPlayer()
-    {
+    { 
+        CameraSwitcher.instance.SwitchToTopDown();
         currentPlayer++;
-
+        //Debug.Log(currentPlayer + "= currentPlayer switchplayer");
         //ÁĞÎÑÈË ÄÓÁËÜ?
         doubleRollCount = 0;
-
+        //ÎÁÍÓËÈÒÜ ÑÒÀÒÓÑ:
+        hasRolledDice = false;
         //ÏĞÎÂÅĞÊÀ ÍÀ OVERFLOW
         if (currentPlayer>=playerList.Count)
         {
@@ -233,24 +324,32 @@ public class GameManager : MonoBehaviour
         DeactivateArrows();
         playerList[currentPlayer].ActivateArrowSelector(true);
 
+        ManageUI.instance.GetBottomTextPanel.gameObject.SetActive(false);
         //Â ÒÓĞÌÅ?
-
         //Èãğîê - ÈÈ?
-        if(playerList[currentPlayer].playerType == Player.PlayerType.AI)
+        if (playerList[currentPlayer].playerType == Player.PlayerType.AI)
         {
-            RollDice();
+            //RollDice();
+            //Debug.Log(playerList[currentPlayer].nickname + " = nickname");
+            //Debug.Log(playerList[currentPlayer].playerType + " = playerType");
+            //Debug.Log("SWITCH PLAYER ROLL:");
+            RollPhysicalDices();
             //OnUpdateBottomBalance.Invoke(playerList[currentPlayer].ReadMoney);
-            OnShowHumanPanel.Invoke(false, false, false);//deactivate panel êîãäà õîä AI 
+            OnShowHumanPanel.Invoke(false, false, false,false, false);//deactivate panel êîãäà õîä AI 
         }
         else
         {
             //OnUpdateBottomBalance.Invoke(playerList[currentPlayer].ReadMoney);
-            OnShowHumanPanel.Invoke(true, true, false);//panel+ roll+ end-
+            ManageUI.instance.UpdateBottomMoneyText(playerList[currentPlayer].ReadMoney);
+            ManageUI.instance.GetBottomTextPanel.gameObject.SetActive(true);
+            bool jailFreeChanceCard = playerList[currentPlayer].HasChanceJailFreeCard;
+            bool jailFreeCommunityCard = playerList[currentPlayer].HasCommunityJailFreeCard;
+            OnShowHumanPanel.Invoke(true, true, false, jailFreeChanceCard,jailFreeCommunityCard);//panel+ roll+ end-
         }
     }
 
     //İÒÎ:
-    public int[] LastRolledDice() => rolledDice;
+    public List<int> LastRolledDice() => rolledDice;
     //Òî æå ñàìîå ÷òî è: 
 
     /*    public int[] LastRolledDice()
@@ -287,10 +386,11 @@ public class GameManager : MonoBehaviour
         if (playerList.Count == 1)
         {
             //ÅÑÒÜ ÏÎÁÅÄÈÒÅËÜ:
-            Debug.Log("ÏÎÁÅÄÈÒÅËÜ - " + playerList[0].nickname);
+            //Debug.Log("ÏÎÁÅÄÈÒÅËÜ - " + playerList[0].nickname);
             OnUpdateMessage("ÏÎÁÅÄÈÒÅËÜ - " + playerList[0].nickname);
             //ÎÑÒÀÍÎÂÈÒÜ ÈÃĞÓ
-
+            gameOverPanel.SetActive(true);
+            //winnerName.text = playerList[0].nickname +" - ÌÎÍÎÏÎËÈÑÒ. (L.)";
             //ÏÎÊÀÇÀÒÜ UI //DESIGN
         }
     }
@@ -302,6 +402,46 @@ public class GameManager : MonoBehaviour
         {
             player.ActivateArrowSelector(false);//âûğóáàíèå ñòğåëî÷åê èëè "Àêòèâíûé èãğîê"
         }
+    }
+
+    //----------------------ÏĞÎÄÎËÆÈÒÜ ÈÃĞÓ CONTINUE() ÔÓÍÊÖÈß-------------(íóæíî invoke â playere íî îí íå monobehaviour)
+    public void Continue()
+    {
+        if (playerList.Count > 1)//fix#166-2+ (164) ïğîáëåìû êîãäà ìîæíî áûëî óäàëèòü ïğåäïîñëåäíåãî èãğîêà, íî èãğà ïğîäîëæàëàñü
+        {
+            SwitchPlayer();
+        }
+        Invoke("ContinueGame", SecondsBetweenTurns);
+    }
+    public void ContinueGame()
+    {
+        //ÅÑËÈ ÏÎÑËÅÄÍÈÉ ÁĞÎÑÎÊ ÄÓÁËÜ -
+        if (RolledADouble || !hasRolledDice)
+        {
+            //-ÁĞÎÑÀÉ ÑÍÎÂÀ
+            //RollDice();
+            //Debug.Log("ContinueGame Roll");
+            RollPhysicalDices();
+            hasRolledDice = true;
+        }
+        else//ÅÑËÈ ÍÅÒ - ÏÅĞÅÕÎÄ ÕÎÄÀ
+        {
+            SwitchPlayer();
+        }
+    }
+
+    public void HumanBankrupt()
+    {
+        playerList[currentPlayer].Bankrupt();
+    }
+
+    public void UseJailFreeChanceCard()
+    {
+        playerList[currentPlayer].UseChanceJailFreeCard();
+    }
+    public void UseJailFreeCommunityCard()
+    {
+        playerList[currentPlayer].UseCommunityJailFreeCard();
     }
 }
 
