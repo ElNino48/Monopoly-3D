@@ -34,7 +34,7 @@ public class NodeSetEditor : Editor
                 {
                     MonopolyNode node = nodeSet.nodesInSetList[j];
                     Image image = node.propertyColorField;
-                    if(image != null)
+                    if (image != null)
                     {
                         Undo.RecordObject(image, "Image color change");
                         image.color = nodeSet.setColor;
