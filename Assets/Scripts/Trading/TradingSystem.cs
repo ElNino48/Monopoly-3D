@@ -398,9 +398,9 @@ public class TradingSystem : MonoBehaviour
         }
         leftYourMoneyText.text = "аюмй: " + leftPlayerReference.ReadMoney + "BYN";
         //мюярпнийю якюидепю х рейярю
-        leftOfferMoneySlider.maxValue = leftPlayerReference.ReadMoney;
-        leftOfferMoneySlider.value = 0;
-        UpdateLeftSlider(leftOfferMoneySlider.value);//намнбкемхе якюидепю б пеюкэмнл бпелемх
+    leftOfferMoneySlider.maxValue = leftPlayerReference.ReadMoney;
+    leftOfferMoneySlider.value = 0;
+    UpdateLeftSlider(leftOfferMoneySlider.value);//намнбкемхе якюидепю б пеюкэмнл бпелемх
         //RESET оняке гюйпшрхъ бйкюдйх
 
         tradePanel.SetActive(true);

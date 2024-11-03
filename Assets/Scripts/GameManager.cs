@@ -149,7 +149,8 @@ public class GameManager : MonoBehaviour
     {
         //if (!hasRolledDice)
         //{
-            CheckForJailFreeCards();
+        CheckForGameOver();
+        CheckForJailFreeCards();
             rolledDice.Clear();
             physicalDice1.RollPhysicalDice();
             physicalDice2.RollPhysicalDice();

@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : SoundEditor
+public class MainMenu : MonoBehaviour
 {
     [System.Serializable]
     public class PlayerSelect
@@ -21,29 +21,70 @@ public class MainMenu : SoundEditor
     public TMP_InputField rememberPlayerNameInput;
     public TMP_InputField insertedPlayerNameInput;
     public string webURL;
+
+    public Button startNewGameButton;
+    public GameObject CreditsGameObject;
+    //
+    public GameObject loadingScreen;
+    public GameObject blackoutPanel;
+    public float fadeDuration = 2f;
+    public void LoadScene(string sceneName)
+    {
+        StartCoroutine(LoadSceneAsync(sceneName));
+    }
+    private IEnumerator LoadSceneAsync(string sceneName)
+    {
+        yield return StartCoroutine(FadeToBlack(blackoutPanel, fadeDuration));
+        loadingScreen.SetActive(true);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return new WaitForSeconds(2f);
+        }
+
+        blackoutPanel.SetActive(false);
+        loadingScreen.SetActive(false);
+    }
+
+    private IEnumerator FadeToBlack(GameObject blackoutPanel, float fadeDuration)
+    {
+        blackoutPanel.SetActive(true);
+        Debug.Log("Loading Game Scene from Main Menu Scene");
+        Image image = blackoutPanel.GetComponent<Image>();
+        Color color = image.color;
+        for (float time = 0; time < fadeDuration; time += Time.deltaTime)
+        {
+            color.a = Mathf.Clamp01(time / fadeDuration);
+            image.color = color;
+            yield return null;
+        }
+        color.a = 1;
+        image.color = color;
+    }
+    //
     public void ContinueButton()
     {
-        Debug.Log("1gere");
         insertedPlayerNameInput.text = rememberPlayerNameInput.text;
-        PlaySound(1);
+        //PlaySound(1);
     }
     public void StartButton()
     {
-        Debug.Log("2gere");
         foreach (var player in playerSelectionArray)
         {
-            Debug.Log("3gere");
-            if (player.activatePlayerToggle.isOn)
+            if (player.nameInput.text == "")
             {
-                Debug.Log("4gere");
+                player.nameInput.text = "«уев";
+            }
+            if (player.activatePlayerToggle.isOn)
+            { 
+                
                 Setting newSet = new Setting(player.nameInput.text, player.typeDropdown.value, player.colorDropdown.value);
                 GameSettings.AddSetting(newSet);
             }
         }
-        Debug.Log("5gere");
-        SceneManager.LoadScene("Game");
+        LoadScene("Game");
     }
-
     public void VisitDeveloper()
     {
         Application.OpenURL(webURL);
