@@ -50,8 +50,8 @@ public class AudioManager : MonoBehaviour
         //Õ¿◊¿À‹Õ€… ”–Œ¬≈Õ‹ √–ŒÃ Œ—“» (SFX) »« ‘¿…À¿:
         initialSFXVolume = PlayerPrefs.GetFloat(SFXVolumeKey, 0.5f);
         float SFXVolume = initialSFXVolume;
-        Debug.Log(initialMusicVolume + "=music");
-        Debug.Log(initialSFXVolume + "=sfx");
+        //Debug.Log(initialMusicVolume + "=music");
+        //Debug.Log(initialSFXVolume + "=sfx");
         SetSFXVolume(SFXVolume);
         UpdateSFXVolumeText();
     }
@@ -115,7 +115,7 @@ public class AudioManager : MonoBehaviour
     {
         musicVolume = Mathf.Clamp(musicVolume + 0.1f, 0f, 1f);
         SetMusicVolume(musicVolume);
-        Debug.Log(musicAudioSource.volume);
+        //Debug.Log(musicAudioSource.volume);
         UpdateMusicVolumeText();
     }
     public void DecreaseMusicVolume()
