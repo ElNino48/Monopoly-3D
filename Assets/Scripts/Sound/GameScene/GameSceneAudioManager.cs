@@ -43,7 +43,7 @@ public class GameSceneAudioManager : MonoBehaviour
     {
         musicAudioSource = GetComponent<AudioSource>();
         sfxAudioSource = gameSceneSFXManager.GetComponent<AudioSource>();
-        Debug.Log(currentTrackIndex + "=current index2");
+        //Debug.Log(currentTrackIndex + "=current index2");
         PlayTrack(currentTrackIndex);
 
         //ÍÀ×ÀËÜÍÛÉ ÓÐÎÂÅÍÜ ÃÐÎÌÊÎÑÒÈ (ÌÓÇÛÊÈ) ÈÇ ÔÀÉËÀ:
@@ -55,8 +55,8 @@ public class GameSceneAudioManager : MonoBehaviour
         //ÍÀ×ÀËÜÍÛÉ ÓÐÎÂÅÍÜ ÃÐÎÌÊÎÑÒÈ (SFX) ÈÇ ÔÀÉËÀ:
         initialSFXVolume = PlayerPrefs.GetFloat(SFXVolumeKey, 0.5f);
         float SFXVolume = initialSFXVolume;
-        Debug.Log(initialMusicVolume + "=musicGameScene");
-        Debug.Log(initialSFXVolume + "=sfxGameScene");
+        //Debug.Log(initialMusicVolume + "=musicGameScene");
+        //Debug.Log(initialSFXVolume + "=sfxGameScene");
         SetSFXVolume(SFXVolume);
         UpdateSFXVolumeText();
         //UPDATE Íàçâàíèÿ òåêóùåãî òðêà
@@ -67,7 +67,7 @@ public class GameSceneAudioManager : MonoBehaviour
         // Óáåäèòåñü, ÷òî òåêóùèé òðåê äîñòóïåí
         if ( musicTracks.Length > 0)
         {
-            Debug.Log(currentTrackIndex + "=current index3");
+            //Debug.Log(currentTrackIndex + "=current index3");
             trackNameText.text = musicTracks[GetCurrentTrackIndex].name;
         }
     }
@@ -84,7 +84,7 @@ public class GameSceneAudioManager : MonoBehaviour
         musicAudioSource.clip = musicTracks[index];
         musicAudioSource.Play();
 
-        Debug.Log(currentTrackIndex + "=current index4");
+        //Debug.Log(currentTrackIndex + "=current index4");
         UpdateTrackName(index);
     }
     public void NextTrack()
@@ -92,7 +92,7 @@ public class GameSceneAudioManager : MonoBehaviour
         currentTrackIndex++;
         if (currentTrackIndex >= musicTracks.Length)
         {
-            Debug.Log(currentTrackIndex + "=current index5");
+            //Debug.Log(currentTrackIndex + "=current index5");
             currentTrackIndex = 0;
         }
         PlayTrack(currentTrackIndex);
@@ -134,7 +134,7 @@ public class GameSceneAudioManager : MonoBehaviour
     {
         musicVolume = Mathf.Clamp(musicVolume + 0.1f, 0f, 1f);
         SetMusicVolume(musicVolume);
-        Debug.Log(musicAudioSource.volume);
+        //Debug.Log(musicAudioSource.volume);
         UpdateMusicVolumeText();
     }
     public void DecreaseMusicVolume()
@@ -167,8 +167,8 @@ public class GameSceneAudioManager : MonoBehaviour
         initialSFXVolume = PlayerPrefs.GetFloat(SFXVolumeKey, 0.5f);
         SetMusicVolume(initialMusicVolume);
         SetSFXVolume(initialSFXVolume);
-        Debug.Log(initialMusicVolume + "=musicGameScene");
-        Debug.Log(initialSFXVolume + "=sfxGameScene");
+        //Debug.Log(initialMusicVolume + "=musicGameScene");
+        //Debug.Log(initialSFXVolume + "=sfxGameScene");
     }
     private void UpdateMusicVolumeText()
     {

@@ -12,6 +12,7 @@ public class ChanceField : MonoBehaviour
 
     [SerializeField] List<SCR_ChanceCard> cards = new List<SCR_ChanceCard>();
     [SerializeField] TMP_Text cardText;
+    [SerializeField] Image eventImage;
     [SerializeField] GameObject cardHolderBackground;
     [SerializeField] float showTime = 3;//Прятать карты автоматически, если надо
     [SerializeField] Button closeCardButton;
@@ -92,6 +93,7 @@ public class ChanceField : MonoBehaviour
         //Debug.Log("Chance set actvie?.");
         //ВСТАВИТЬ ТЕКСТ ОПИСАНИЯ КАРТОЧКИ
         cardText.text = pickedCard.descriptionOnCard;
+        eventImage = pickedCard.eventImage;
 
         //ПРИМЕНИТЬ КАРТОЧКУ (эффекты, которые она даёт)
         if (currentPlayer.playerType == Player.PlayerType.AI)

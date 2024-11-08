@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "New Community Card", menuName = "Monopoly/Cards/Community")] 
 
 public class SCR_CommunityCard : ScriptableObject
 {
+    public Image eventImage;
     public string descriptionOnCard;//Îïèñàíèå (textOnCard)
     public int rewardMoney;//ÏÎËÓ×ÈÒÜ
     public int penaltyMoney;//ÏÎÒÅĞßÒÜ

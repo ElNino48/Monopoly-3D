@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 [CreateAssetMenu(fileName = "New Chance Card", menuName = "Monopoly/Cards/Chance")]
 
 public class SCR_ChanceCard : ScriptableObject
 {
-
+    public Image eventImage;
     public string descriptionOnCard;//Îïèñàíèå (textOnCard)
     public int rewardMoney;//ÏÎËÓ×ÈÒÜ
     public int penaltyMoney;//ÏÎÒÅĞßÒÜ
