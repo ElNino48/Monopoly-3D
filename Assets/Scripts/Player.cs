@@ -27,6 +27,12 @@ public class Player
     public bool HasChanceJailFreeCard => hasChanceJailFreeCard;
     public bool HasCommunityJailFreeCard => hasCommunityJailFreeCard;
 
+    //---------------------------Взаимодействие с навыками -----------------------------------
+    //SKILLS
+    public List<Skills> skills = new List<Skills>();
+    public float rentBonus = 0f;
+    public float bonusValue = 0f;
+    public float GetRentBonus => rentBonus;
 
     //PLAYER INFO
     PlayerInfo myInfo;
@@ -139,8 +145,17 @@ public class Player
 
     internal void PayRent(int rentAmount, Player owner)
     {
+        foreach (Skills skill in skills) 
+        {
+            if (Skills.SkillType.Influencer == skill.skillType && skill.isInfluencerSkillActive)
+            {
+                ApplyRentBonus(skill.rentIncreasePercentage);
+            }
+        }
+        rentAmount = (int)(rentAmount * (1f + rentBonus));
+        Debug.Log("rentBonus = " + rentBonus + "rentAmount = " + rentAmount);
         //(RENT) ЕСЛИ НЕТ ДОСТАТОЧНО ДЕНЕГ - залоги кредиты и прочая шляпа:
-        if(money < rentAmount)
+        if (money < rentAmount)
         {
             if (playerType == PlayerType.AI)
             {
@@ -545,4 +560,45 @@ public class Player
         OnUpdateMessage.Invoke(nickname + "таинственным образом был <color=green>освобожден</color> из-под стражи. (L.)");
     }
     
+    //SKILLS-----------------------------------------------
+    public void ApplyRentBonus(float bonus)
+    {
+        rentBonus += bonus;
+    }
+
+    public void RemoveRentBonus(float bonus)
+    {
+        rentBonus -= bonus;
+    }
+
+    public void ApplySkill(Skills skill)
+    {
+        switch (skill.skillType)
+        {
+            case Skills.SkillType.Influencer:
+                bonusValue = skill.rentIncreasePercentage;
+                rentBonus += bonusValue;
+                //УСТАРЕВШ: //float принудительно + 10 процентов это 10/100.
+                //UPD: поставил просто 0.1f чтобы проще
+                Debug.Log("Rent bonus (5%) from INFLUENCER skill applied: " + bonusValue);
+                break;
+        }
+    }
+
+    public void RemoveSkill(Skills skill)
+    {
+        switch (skill.skillType)
+        {
+            case Skills.SkillType.Influencer:
+                rentBonus -= bonusValue;
+                Debug.Log("Rent bonus (5%) from INFLUENCER skill REMOVED!!!: " + bonusValue);
+                break;
+        }
+    }
+
+    //public void AddSkill(Skills skill)
+    //{
+    //    skills.Add(skill);
+    //    ApplySkill(skill);
+    //}
 }

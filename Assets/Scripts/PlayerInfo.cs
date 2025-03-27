@@ -10,6 +10,7 @@ public class PlayerInfo : MonoBehaviour
     [SerializeField] TMP_Text playerCashText;
 
     [SerializeField] GameObject activePlayerArrow;
+   
     public void SetPlayerName(string newName)
     {
         playerNameText.text = newName;

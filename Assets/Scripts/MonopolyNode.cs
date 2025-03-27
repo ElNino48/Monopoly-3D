@@ -433,12 +433,13 @@ public class MonopolyNode : MonoBehaviour
 
             case MonopolyNodeType.Chance:
 
-                //Debug.Log("Player Landed on chance node.");
+                Debug.Log("Player Landed on chance node.");
                 OnDrawChanceCard.Invoke(currentPlayer);
                 continueTurn = false;
                 break;
 
             case MonopolyNodeType.Community:
+                Debug.Log("Player Landed on community node.");
                 OnDrawCommunityCard.Invoke(currentPlayer);
                 continueTurn = false;
                 break;
