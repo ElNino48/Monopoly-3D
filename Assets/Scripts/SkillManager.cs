@@ -18,12 +18,11 @@ public class SkillManager : MonoBehaviour
 
     public Player player; // Ссылка на объект игрока
     public GameObject skillPanel; // Ссылка на UI-панель выбора навыков
-    [SerializeField] private List<Skill> skills = new List<Skill>(); // Список доступных навыков (SkillBoxes)
+    [SerializeField] List<Skill> skills = new List<Skill>(); // Список доступных навыков (SkillBoxes)
 
     void Start()
     {
         skillPanel.SetActive(false); // Скрываем панель навыков при старте
-
         foreach (Skill skill in skills)
         {
             skill.OnGetSkill += AddSkill;
@@ -34,26 +33,26 @@ public class SkillManager : MonoBehaviour
     public void OpenSkillPanel()
     {
         skillPanel.SetActive(true);
-        // Здесь можно заполнить UI-элементы доступными навыками
     }
 
-    private void AddSkill(Skill skill)
+    void AddSkill(Skill skill)
     {
         skill.isSkillActive = true;
 
         Player player = GameManager.instance.GetCurrentPlayer;
+        Debug.Log("player = " + player.nickname + "   skill = "+ skill.SkillType);
         AddSkill(player, skill);
     }
 
     public void AddSkill(Player player, Skill skill)
     {
-        if (player.Skills.Where((playerSkill) => playerSkill.SkillType == skill.SkillType) != null)
+        if (player.Skills.Any((playerSkill) => playerSkill.SkillType == skill.SkillType))
         {
+            Debug.Log("Skill already applied! ");
             return;
         }
         //Если среди скиллов игрока найдется skilltype такой же, как у добавляемого навыка, то нужно return чтобы не применять навыки дважды
         player.Skills.Add(skill);
-
         string debugMessage = $"{skill.name} skill applied";
 
         switch (skill.SkillType)

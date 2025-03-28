@@ -8,23 +8,34 @@ public class Calendar : MonoBehaviour
 {
     public TMP_Text dayText;
     public TMP_Text phaseText;
-
+    public TMP_Text eventText;
+    [SerializeField] Animator lightingChanger;
+    bool isDaytime;
+    [SerializeField] List<GameObject> lightpoles;
+    string eventName = "Обычный";
+    int playerCount = 0;
     public enum DayPhase
     {
         Day,
         Night
     }
     public DayPhase currentPhase;
-    private int currentTurn = 0;
+    int currentTurn = 0;
 
-    private void Start()
+    void Start()
     {
-        StartTurn();
+        isDaytime = true;
+        //StartTurn(playersCount);
     }
 
-    void StartTurn()
+    public void StartTurn(int playersCount)
     {
-        switch (currentTurn % 2)
+        Debug.Log("current turn = " + currentTurn);
+        this.playerCount = playersCount;
+        ++currentTurn;       
+        
+        Debug.Log("++current turn / playersCount = " + currentTurn / playersCount);
+        switch ((currentTurn / playersCount) % 2)
         {
             case 0:
                 currentPhase = DayPhase.Day;
@@ -35,16 +46,34 @@ public class Calendar : MonoBehaviour
                 ExecuteNightPhase();
                 break;
         }
-        currentTurn++;
+        CheckStoryEvents();
+        UpdateCalendarUI();
     }
 
     void ExecuteDayPhase()
     {
-        CheckStoryEvents();
+        if (!isDaytime)
+        {
+            lightingChanger.SetTrigger("SetDay");
+            isDaytime = true;
+            foreach(GameObject pole in lightpoles)
+            {
+                pole.transform.GetChild(1).GetComponent<Animator>().SetTrigger("SetDayPoles");
+            }
+        }
     }
 
     void ExecuteNightPhase()
     {
+        if (isDaytime)
+        {
+            lightingChanger.SetTrigger("SetNight");
+            isDaytime = false;
+            foreach (GameObject pole in lightpoles)
+            {
+                pole.transform.GetChild(1).GetComponent<Animator>().SetTrigger("SetNightPoles");
+            }
+        }
         IncreasePropertyCost(1f);
     }
     void IncreasePropertyCost(float percentage)
@@ -54,36 +83,41 @@ public class Calendar : MonoBehaviour
 
     void UpdateCalendarUI()
     {
-        dayText.text = $"ДЕНЬ : { currentTurn / 2 + 1}";
-        dayText.text = $"{ currentPhase}";
-
+        dayText.text = $"ДЕНЬ : { currentTurn / (playerCount * 2) + 1}"; //День меняется когда завершилось 2 цикла ходов + 1 стартовый
+        phaseText.text = $"{ (currentPhase == DayPhase.Day? phaseText.text = "Утро" : phaseText.text = "Ночь")}";
+        eventText.text = $"{ eventName}";
     }
     void CheckStoryEvents()
     {
-        if (currentTurn == 2)
+        Debug.Log("check story current turn = " + currentTurn);
+        Debug.Log("playerCount = " + playerCount);
+        Debug.Log(currentTurn / playerCount);
+        if (currentTurn / playerCount == 1)//1-я ночь
         {
             TriggerExhibition();
         }
-        else if (currentTurn == 4)
+        else if (currentTurn / playerCount == 3)//2-я ночь
         {
             TriggerBlackMarket();
         }
-        else if (currentTurn == 5)
+        else if (currentTurn / playerCount == 4)//3-е утро
         {
             TriggerColdTimes();
         }
+        else eventName = "Обычный";
     }
 
     void TriggerExhibition()
     {
-
+        eventName = "Выставка";
     }
     void TriggerBlackMarket()
     {
-
+        eventName = "Черный рынок";
     }
     void TriggerColdTimes()
     {
-            
+        eventName = "Заморозки";
+
     }
 }

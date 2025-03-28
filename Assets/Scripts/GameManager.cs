@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] Dice physicalDice2;
     //апнянй йняреи
 
+    [Header("Calendar")]
+    [SerializeField] Calendar calendar;
+
     List<int> rolledDice = new List<int>();
     bool isDoubleRolled;
     bool hasRolledDice;
@@ -308,7 +311,8 @@ public class GameManager : MonoBehaviour
     }
 
     public void SwitchPlayer()
-    { 
+    {
+        calendar.StartTurn(playerList.Count);
         CameraSwitcher.instance.SwitchToTopDown();
         currentPlayer++;
         //Debug.Log(currentPlayer + "= currentPlayer switchplayer");
@@ -421,12 +425,13 @@ public class GameManager : MonoBehaviour
         {
             //-апняюи ямнбю
             //RollDice();
-            //Debug.Log("ContinueGame Roll");
+            Debug.Log("ContinueGame Roll, did player switch-bug occur?");
             RollPhysicalDices();
             hasRolledDice = true;
         }
         else//еякх мер - оепеунд ундю
         {
+            Debug.Log("continue game no double rolled");
             SwitchPlayer();
         }
     }
