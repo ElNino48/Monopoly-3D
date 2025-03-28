@@ -1,23 +1,33 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SkillManager : MonoBehaviour
 {
+    public enum SkillType
+    {
+        Economist,
+        Strateg,
+        Influencer,
+        Speculant,
+        Master,
+        Industrialist,
+        Corporate,
+        Builder
+    }
+
     public Player player; // Ссылка на объект игрока
     public GameObject skillPanel; // Ссылка на UI-панель выбора навыков
-    public List<Skills> availableSkills = new List<Skills>(); // Список доступных навыков (префабы)
-    [SerializeField] GameObject economistBox;//1
-    [SerializeField] GameObject strategBox;//2
-    [SerializeField] GameObject influencerBox;//3
-    [SerializeField] GameObject speculantBox;//4
-    [SerializeField] GameObject masterBox;//5
-    [SerializeField] GameObject industrialistBox;//6
-    [SerializeField] GameObject corporateBox;//skill7
-    [SerializeField] GameObject builderBox;//skill8
+    [SerializeField] private List<Skill> skills = new List<Skill>(); // Список доступных навыков (SkillBoxes)
 
     void Start()
     {
         skillPanel.SetActive(false); // Скрываем панель навыков при старте
+
+        foreach (Skill skill in skills)
+        {
+            skill.OnGetSkill += AddSkill;
+        }
     }
 
     // Метод для открытия панели выбора навыков
@@ -27,96 +37,66 @@ public class SkillManager : MonoBehaviour
         // Здесь можно заполнить UI-элементы доступными навыками
     }
 
-    // Метод для выбора навыка игроком
-    //public void ChooseSkill(int skillIndex)
-    //{
-    //    if (skillIndex >= 0 && skillIndex < availableSkills.Count)
-    //    {
-    //        Skills chosenSkillPrefab = availableSkills[skillIndex];
-    //        Skills chosenSkill = Instantiate(chosenSkillPrefab); // Создаем экземпляр выбранного навыка
-    //        player.AddSkill(chosenSkill); // Применяем навык к игроку
-    //        skillPanel.SetActive(false); // Закрываем панель навыков
-    //    }
-    //}
+    private void AddSkill(Skill skill)
+    {
+        skill.isSkillActive = true;
 
-    public void AddEconomistSkill()
+        Player player = GameManager.instance.GetCurrentPlayer;
+        AddSkill(player, skill);
+    }
+
+    public void AddSkill(Player player, Skill skill)
     {
-        foreach (Skills skill in availableSkills)
+        if (player.Skills.Where((playerSkill) => playerSkill.SkillType == skill.SkillType) != null)
         {
-            if (Skills.SkillType.Economist == skill.skillType)
-            {
-                skill.isEconomistSkillActive = true;
-            }
+            return;
+        }
+        //Если среди скиллов игрока найдется skilltype такой же, как у добавляемого навыка, то нужно return чтобы не применять навыки дважды
+        player.Skills.Add(skill);
+
+        string debugMessage = $"{skill.name} skill applied";
+
+        switch (skill.SkillType)
+        {
+            case SkillType.Economist:
+                Debug.Log(debugMessage + " (under development)");
+                break;
+            case SkillType.Strateg:
+                Debug.Log(debugMessage + " (under development)");
+                break;
+            case SkillType.Influencer:
+                player.RentBonus += skill.SkillModifier;
+                //бонус - количество %, добавляемое к 100% ренты (+0.1 = +10%)
+                Debug.Log($"{skill.name} skill applied: Rent bonus ({skill.SkillModifier * 100}%)");
+                break;
+            case SkillType.Speculant:
+                Debug.Log(debugMessage + " (under development)");
+                break;
+            case SkillType.Master:
+                Debug.Log(debugMessage + " (under development)");
+                break;
+            case SkillType.Industrialist:
+                Debug.Log(debugMessage + " (under development)");
+                break;
+            case SkillType.Corporate:
+                Debug.Log(debugMessage + " (under development)");
+                break;
+            case SkillType.Builder:
+                Debug.Log(debugMessage + " (under development)");
+                break;
         }
     }
-    public void AddStrategSkill()
+
+    public void RemoveSkill(Player player, Skill skill)
     {
-        foreach (Skills skill in availableSkills)
+        player.Skills.Remove(skill);
+
+        switch (skill.SkillType)
         {
-            if (Skills.SkillType.Strateg == skill.skillType)
-            {
-                skill.isStrategSkillActive = true;
-            }
-        }
-    }
-    public void AddInfluencerSkill()
-    {
-        foreach (Skills skill in availableSkills)
-        {
-            if (Skills.SkillType.Influencer == skill.skillType)
-            {
-                skill.isEconomistSkillActive = true;
-            }
-        }
-    }
-    public void AddSpeculantSkill()
-    {
-        foreach (Skills skill in availableSkills)
-        {
-            if (Skills.SkillType.Speculant == skill.skillType)
-            {
-                skill.isSpeculantSkillActive = true;
-            }
-        }
-    }
-    public void AddMasterSkill()
-    {
-        foreach (Skills skill in availableSkills)
-        {
-            if (Skills.SkillType.Master == skill.skillType)
-            {
-                skill.isMasterSkillActive = true;
-            }
-        }
-    }
-    public void AddIndustrialistSkill()
-    {
-        foreach (Skills skill in availableSkills)
-        {
-            if (Skills.SkillType.Industrialist == skill.skillType)
-            {
-                skill.isIndustrialistSkillActive = true;
-            }
-        }
-    }
-    public void AddCorporateSkill()
-    {
-        foreach (Skills skill in availableSkills)
-        {
-            if (Skills.SkillType.Corporate == skill.skillType)
-            {
-                skill.isCorporateSkillActive = true;
-            }
-        }
-    }
-    public void AddBuilderSkill()
-    {
-        foreach (Skills skill in availableSkills)
-        {
-            if (Skills.SkillType.Builder == skill.skillType)
-            {
-                skill.isBuilderSkillActive = true;
-            }
+            case SkillType.Influencer:
+                player.RentBonus -= skill.SkillModifier;
+                Debug.Log($"{skill.name} skill removed");
+                break;
         }
     }
 }
