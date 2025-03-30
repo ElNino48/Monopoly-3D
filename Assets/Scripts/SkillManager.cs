@@ -58,6 +58,7 @@ public class SkillManager : MonoBehaviour
         switch (skill.SkillType)
         {
             case SkillType.Economist:
+                player.HouseCostBonus -= skill.SkillModifier;
                 Debug.Log(debugMessage + " (under development)");
                 break;
             case SkillType.Strateg:
@@ -69,7 +70,8 @@ public class SkillManager : MonoBehaviour
                 Debug.Log($"{skill.name} skill applied: Rent bonus ({skill.SkillModifier * 100}%)");
                 break;
             case SkillType.Speculant:
-                Debug.Log(debugMessage + " (under development)");
+                TradingSystem.instance.SpeculantBonus = skill.SkillModifier;
+                Debug.Log($"{skill.name} skill applied: Speculant bonus ({skill.SkillModifier * 100}%)");
                 break;
             case SkillType.Master:
                 Debug.Log(debugMessage + " (under development)");
@@ -88,13 +90,16 @@ public class SkillManager : MonoBehaviour
 
     public void RemoveSkill(Player player, Skill skill)
     {
+        Debug.Log($"{skill.name} skill removed");
         player.Skills.Remove(skill);
 
         switch (skill.SkillType)
         {
+            case SkillType.Economist:
+                player.HouseCostBonus += skill.SkillModifier;
+                break;
             case SkillType.Influencer:
                 player.RentBonus -= skill.SkillModifier;
-                Debug.Log($"{skill.name} skill removed");
                 break;
         }
     }

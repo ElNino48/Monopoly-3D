@@ -69,7 +69,7 @@ public class UIShowProperty : MonoBehaviour
         hotelRentPriceText.text = node.rentWithHouses[4] + "BYN";
 
         //СТОИМОСТЬ ПОСТРОЙКИ 
-        housePriceText.text = node.houseCost + "BYN";//стоимость домов и отелей одинаковая DESIGN
+        housePriceText.text = currentPlayer.GetHouseCostForPlayer(node) + "BYN";//стоимость домов и отелей одинаковая DESIGN
         mortgagePriceText.text = node.MortgageValue + "BYN";//стоимость залога
        
         //BOTTOM PANEL CONTENT:

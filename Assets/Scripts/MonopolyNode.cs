@@ -620,22 +620,26 @@ public class MonopolyNode : MonoBehaviour
         }
     }
 
-    public void BuildHouseOrHotel()
+    /// <returns>Стоимость строительства</returns>
+    public int BuildHouseOrHotel(Player player)
     {
         if (type == MonopolyNodeType.Property)
         {
             numberOfHouses++;
             VisualiseHouses();
+            return player.GetHouseCostForPlayer(this);
         }
+        return 0;
     }
 
-    public int SellHouseOrHotel()
+    /// <returns>Кол-во денег получаемых от продажи</returns>
+    public int SellHouseOrHotel(Player player)
     {
         if (numberOfHouses > 0 && type == MonopolyNodeType.Property && numberOfHouses > 0)
         {
             numberOfHouses--;
             VisualiseHouses();
-            return houseCost / 2;//ФОРМУЛА ДЛЯ ПРОДАЖИ
+            return player.GetSellHouseCostForPlayer(this);
         }
         return 0;
     }

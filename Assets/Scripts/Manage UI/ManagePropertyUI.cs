@@ -49,8 +49,8 @@ public class ManagePropertyUI : MonoBehaviour
         buyHouseButton.interactable = allSame && CheckIfBuyAllowed();
         sellHouseButton.interactable = CheckIfSellAllowed();
 
-        buyHouseButtonText.text = ("œŒ—“–Œ»“‹ <color=red>-" + nodesInSet[0].houseCost + "BYN");//DESIGN 
-        sellHouseButtonText.text = ("œ–Œƒ¿“‹ <color=green>+" + nodesInSet[0].houseCost/2 + "BYN");//DESIGN 
+        buyHouseButtonText.text = ("œŒ—“–Œ»“‹ <color=red>-" + owner.GetHouseCostForPlayer(nodesInSet[0]) + "BYN");//DESIGN 
+        sellHouseButtonText.text = ("œ–Œƒ¿“‹ <color=green>+" + owner.GetSellHouseCostForPlayer(nodesInSet[0]) + "BYN");//DESIGN 
         if (nodes[0].type != MonopolyNodeType.Property)
         {
             buyHouseButton.interactable = false;
@@ -68,7 +68,7 @@ public class ManagePropertyUI : MonoBehaviour
             ManageUI.instance.UpdateSystemMessage(message);
             return;
         }
-        if (playerReference.CanAffordHouse(nodesInSet[0].houseCost))
+        if (playerReference.CanAffordHouse(nodesInSet[0]))
         {
             playerReference.BuildHousesOrHotelEvenly(nodesInSet);
             string message = "ƒÓÏ ÔÓÒÚÓÂÌ.";

@@ -31,6 +31,16 @@ public class Player
     //SKILLS
     public List<Skill> Skills { get; } = new List<Skill>();
     public float RentBonus { get; set; }
+    public float HouseCostBonus { get; set; }
+
+    public int GetHouseCostForPlayer(MonopolyNode node)
+    {
+        return node.houseCost + Mathf.CeilToInt(node.houseCost * HouseCostBonus);
+    }
+    public int GetSellHouseCostForPlayer(MonopolyNode node)
+    {
+        return node.houseCost / 2;
+    }
 
     //PLAYER INFO
     PlayerInfo myInfo;
@@ -297,7 +307,7 @@ public class Player
                 housesToSell = node.NumberOfHouses;
                 if (housesToSell > 0)
                 {
-                    CollectMoney(node.SellHouseOrHotel());
+                    CollectMoney(node.SellHouseOrHotel(this));
                     allHouses--;
                     //Õ”∆ÕŒ ¡ŒÀ‹ÿ≈ ƒ≈Õ≈√?
                     if (money >= amountToPay)
@@ -431,9 +441,8 @@ public class Player
         foreach (var node in nodesToBuidOn)
         {
             //«Õ¿◊»“ ” »√–Œ ¿ ≈—“‹ Ã≈—“Œ
-            if (node.NumberOfHouses == minHouses && node.NumberOfHouses< 5 && CanAffordHouse(node.houseCost)){
-                node.BuildHouseOrHotel();
-                PayMoney(node.houseCost);
+            if (node.NumberOfHouses == minHouses && node.NumberOfHouses< 5 && CanAffordHouse(node)){
+                PayMoney(node.BuildHouseOrHotel(this));
                 //Œ—“¿ÕŒ¬ ¿ ÷» À¿ ≈—À» Õ”∆ÕŒ œŒ—“–Œ»“‹ “ŒÀ‹ Œ Œƒ»Õ ƒŒÃ» 
                 break;
             }
@@ -454,19 +463,21 @@ public class Player
         {
             if (nodesToSellFrom[i].NumberOfHouses > minHouses)
             {//ÛÊÂ ‚ Player'e(class Player)
-                CollectMoney(nodesToSellFrom[i].SellHouseOrHotel());
+                CollectMoney(nodesToSellFrom[i].SellHouseOrHotel(this));
                 isHouseSold = true;
                 break;
             }
         }
         if (!isHouseSold)
         {
-            CollectMoney(nodesToSellFrom[nodesToSellFrom.Count-1].SellHouseOrHotel());
+            CollectMoney(nodesToSellFrom[nodesToSellFrom.Count-1].SellHouseOrHotel(this));
         }
     }
 
-    internal bool CanAffordHouse(int price)
+    internal bool CanAffordHouse(MonopolyNode node)
     {
+        int price = GetHouseCostForPlayer(node);
+
         if (playerType == PlayerType.AI)//AI
         {
 

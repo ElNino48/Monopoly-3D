@@ -71,6 +71,9 @@ public class TradingSystem : MonoBehaviour
     //MESSAGE SYSTEM - ÑÈÑÒÅÌÀ ÄÈÀËÎÃÎÂÛÕ ÎÊÎÍ
     public delegate void UpdateMessage(string message);
     public static UpdateMessage OnUpdateMessage;
+
+    //SKILLS
+    public float SpeculantBonus { get; set; } = 0.05f;
     
     private void Awake()
     {
@@ -144,12 +147,12 @@ public class TradingSystem : MonoBehaviour
     {
         Debug.Log("7"+currentPlayer.nickname + " = current. \n" + nodeOwner.nickname + " = nodeOwner");
         //ÄÅÍÜÃÀÌÈ, ÅÑËÈ ÌÎÆÍÎ (ÔÎĞÌÓËÀ ÒÎĞÃÎÂËÈ ÄÅÍÜÃÀÌÈ)
-        if (currentPlayer.ReadMoney >= CalculateValueOfNode(requestedNode))
+        if (currentPlayer.ReadMoney >= CalculateValueOfNode(requestedNode, currentPlayer))
         {
             //ÒÎĞÃÎÂËß ÒÎËÜÊÎ ÒÎËÜÊÎ ÄÅÍÜÃÀÌÈ:
             //ÑÎÇÄÀÍÈÅ ÎÔÔÅĞÀ
             Debug.Log("ÄÅÍÅÆÍÛÉ ÒĞÅÉÄ:");
-            MakeTradeOffer(currentPlayer, nodeOwner, requestedNode, null, CalculateValueOfNode(requestedNode), 0);
+            MakeTradeOffer(currentPlayer, nodeOwner, requestedNode, null, CalculateValueOfNode(requestedNode, currentPlayer), 0);
             //offeredNode=null äëÿ òîğãîâëè ÄÅÍÜÃÀÌÈ
             return;
         }
@@ -167,10 +170,10 @@ public class TradingSystem : MonoBehaviour
             }
             if (checkedSet.Count(n => n.Owner == currentPlayer) == 1)//ÊÀÆÄÀß ÊÀĞÒÎ×ÊÀ, ÃÄÅ ÂËÀÄÅËÅÖ - currentPLayer
             {
-                if (CalculateValueOfNode(node) + currentPlayer.ReadMoney >= requestedNode.Price)
+                if (CalculateValueOfNode(node, currentPlayer) + currentPlayer.ReadMoney >= requestedNode.Price)
                 {
                     //ÔÎĞÌÓËÀ ğàññ÷¸òà ĞÀÇÍÈÖÛ ÌÅÆÄÓ ÒÎĞÃÓÅÌÛÌÈ ÊÀĞÒÎ×ÊÀÌÈ
-                    int difference = CalculateValueOfNode(requestedNode) - CalculateValueOfNode(node);
+                    int difference = CalculateValueOfNode(requestedNode, currentPlayer) - CalculateValueOfNode(node, currentPlayer);
                     Debug.Log(difference + "= difference");
                     if (difference >= 0)
                     {
@@ -222,14 +225,14 @@ public class TradingSystem : MonoBehaviour
         //(600+req0) - (300+off300) 
         //(300+req300) - (600+off0)
         Debug.Log(requestedMoney + "= reqMoney + ");
-        Debug.Log(CalculateValueOfNode(requestedNode) + "= CalcReq");
+        Debug.Log(CalculateValueOfNode(requestedNode, currentPlayer) + "= CalcReq");
         Debug.Log(offeredMoney + "= offeredMoney + ");
-        Debug.Log(CalculateValueOfNode(offeredNode) + "= CalcOff");
+        Debug.Log(CalculateValueOfNode(offeredNode, currentPlayer) + "= CalcOff");
 
-        int valueOfTrade = (CalculateValueOfNode(requestedNode) + requestedMoney) - (CalculateValueOfNode(offeredNode) + offeredMoney);
+        int valueOfTrade = (CalculateValueOfNode(requestedNode, currentPlayer) + requestedMoney) - (CalculateValueOfNode(offeredNode, currentPlayer) + offeredMoney);
 
-        Debug.Log((CalculateValueOfNode(requestedNode) + requestedMoney) + " = ëåâî(íî Req) -");
-        Debug.Log((CalculateValueOfNode(offeredNode) + offeredMoney) + " = ïğàâî(íîOffer).");
+        Debug.Log((CalculateValueOfNode(requestedNode, currentPlayer) + requestedMoney) + " = ëåâî(íî Req) -");
+        Debug.Log((CalculateValueOfNode(offeredNode, currentPlayer) + offeredMoney) + " = ïğàâî(íîOffer).");
         Debug.Log(valueOfTrade + " = valueOfTrade");
         //ÈÈ ÏĞÅÄËÎÆÈÒ ÈÃĞÎÊÓ ÒĞÅÉÄ, ÃÄÅ ÇÀÕÎ×ÅÒ ÏĞÎÄÀÒÜ ÊÀĞÒÎ×ÊÓ ÇÀ $$$-ÄÅÍÜÃÈ-BYN (ñêîğåå âñåãî ğàáîòàòü íå áóäåò êàíåøíî...
         //ÄËß İÒÎÃÎ: 1) íå äîëæíî áûòü çàïğîñà êàğòî÷êè
@@ -286,14 +289,14 @@ public class TradingSystem : MonoBehaviour
     }
 
     //ĞÀÑÑ×ÈÒÀÒÜ ÑÒÎÈÌÎÑÒÜ ÊÀĞÒÎ×ÊÈ(ÈÈ)
-    int CalculateValueOfNode(MonopolyNode requestedNode)
+    int CalculateValueOfNode(MonopolyNode requestedNode, Player player)
     {
         int value = 0;
         if (requestedNode != null)
         {
             if (requestedNode.type == MonopolyNodeType.Property)
             {
-                value = requestedNode.Price * 2 + requestedNode.NumberOfHouses * requestedNode.houseCost;
+                value = requestedNode.Price * 2 + requestedNode.NumberOfHouses * player.GetHouseCostForPlayer(requestedNode);
             }
             else
             {
@@ -353,6 +356,32 @@ public class TradingSystem : MonoBehaviour
         {
             Debug.Log("Ïîïûòêà âçÿòêè.");
             isCorrupted = true;
+        }
+
+        //SKILL--Speculant
+        List<Player> playerList = GameManager.instance.GetPlayers;
+        if(offeredNode != null) Debug.Log("offered node price = " + offeredNode.Price);
+        if(requestedNode != null) Debug.Log("requested node price = " + requestedNode.Price);
+        Debug.Log("offered money = " + offeredMoney + " ;requested money " + requestedMoney);
+
+        int totalTradeValue = offeredMoney + requestedMoney;
+        if (offeredNode != null)
+        {
+            totalTradeValue += offeredNode.Price;
+        }
+        if (requestedNode != null)
+        {
+            totalTradeValue += requestedNode.Price;
+        }
+        int calculatedSpeculantBonus = (int)Mathf.Ceil(totalTradeValue * SpeculantBonus);
+
+        foreach (Player player in playerList)
+        {
+            if (player.Skills.Any((playerSkill) => playerSkill.SkillType == SkillManager.SkillType.Speculant))
+            {
+                player.CollectMoney(calculatedSpeculantBonus);
+                Debug.Log("Speculant trait granted player \"" + player.nickname +"\" " + calculatedSpeculantBonus + " BYN as bonus");
+            }
         }
         ManageUI.instance.UpdateBottomMoneyText(currentPlayer.ReadMoney);
 
