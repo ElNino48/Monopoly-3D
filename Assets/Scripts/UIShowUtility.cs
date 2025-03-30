@@ -53,20 +53,20 @@ public class UIShowUtility : MonoBehaviour
         //colorField.color = node.propertyColorField.color
 
         //ярнхлнярэ онярпнийх DESIGN
-        mortgagePriceText.text = node.MortgagedValue + "BYN";//ЯРНХЛНЯРЭ ГЮКНЦЮ
+        mortgagePriceText.text = node.MortgageValue + "BYN";//ЯРНХЛНЯРЭ ГЮКНЦЮ
 
         //BOTTOM PANEL CONTENT:
-        utilityPriceText.text = "опхнапеярх гю <color=green>" + node.price + "BYN";
+        utilityPriceText.text = "опхнапеярх гю <color=green>" + node.Price + "BYN";
         playerMoneyText.text = "аюмй: " + currentPlayer.ReadMoney + "BYN";
 
         //BuyPropertyButton мюярпнийх ймнойх
-        if (currentPlayer.CanAffordNode(node.price))
+        if (currentPlayer.CanAffordNode(node.Price))
         {
             buyUtilityButton.interactable = true;
         }
         else
         {
-            utilityPriceText.text = "опхнапеярх гю <color=red>" + node.price + "BYN";
+            utilityPriceText.text = "опхнапеярх гю <color=red>" + node.Price + "BYN";
             buyUtilityButton.interactable = false;
         }
         //ямювюкю гюонкмъеряъ йнмремр, гюрел онйюгшбюч оюмекэ:

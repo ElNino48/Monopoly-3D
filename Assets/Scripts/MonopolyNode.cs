@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.Serialization;
 using TMPro;
 
 public enum MonopolyNodeType
@@ -29,9 +29,25 @@ public class MonopolyNode : MonoBehaviour
     [SerializeField] TMP_Text nameText;
 
     [Header("Property Price")]
-    public int price;
+    [FormerlySerializedAs("price")]
+    [SerializeField] int basePrice;
     public int houseCost;
     [SerializeField] TMP_Text priceText;
+    private float priceModifier = 1;
+    public float PriceModifier 
+    {
+        get => priceModifier;
+        set
+        {
+            priceModifier = value;
+            if (priceText != null)
+            {
+                priceText.text = Price + " BYN";
+            }
+        }
+    }
+    public int Price => (int)Mathf.Ceil(basePrice * PriceModifier * GlobalPriceModifier);//Округление в большую сторону
+    public static float GlobalPriceModifier { get; set; } = 1.0f;//Модификатор для EVENTS
 
     [Header("Property Rent")]
     [SerializeField] bool calculateRentAuto;
@@ -48,7 +64,6 @@ public class MonopolyNode : MonoBehaviour
     [SerializeField] GameObject mortgageImage;//залог
     [SerializeField] GameObject propertyImage;
     [SerializeField] bool isMortgaged;
-    [SerializeField] int mortgageValue;
 
     [Header("Property Owner")]
     [SerializeField] GameObject ownerBar;
@@ -103,15 +118,13 @@ public class MonopolyNode : MonoBehaviour
         }
 
         //ВЫЧИСЛЕНИЯ
-        if(calculateRentAuto)
+        if (calculateRentAuto)
         {
             if(type == MonopolyNodeType.Property)
             {
                 if(baseRent>0)
                 {
-                    price = 3 * (baseRent * 10);
-                    //цена залога
-                    mortgageValue = price / 2;
+                    basePrice = 3 * (baseRent * 10);
 
                     rentWithHouses.Clear();
                     rentWithHouses.Add(baseRent * 5);
@@ -119,35 +132,26 @@ public class MonopolyNode : MonoBehaviour
                     rentWithHouses.Add(baseRent * 5 * 9);
                     rentWithHouses.Add(baseRent * 5 * 16);
                     rentWithHouses.Add(baseRent * 5 * 25);
-
-                    
                 }
                 else if (baseRent <= 0)
                 {
-                    price = 0;
+                    basePrice = 0;
                     baseRent = 0;
                     rentWithHouses.Clear();
                 }
             }
-            if(type == MonopolyNodeType.Utility)
-            {
-                mortgageValue = price / 2;
-            }
-
-            if (type == MonopolyNodeType.Railroad)
-            {
-                mortgageValue = price / 2;
-            }
         }
         if (priceText != null)
         {
-            priceText.text = price + " BYN";
+            priceText.text = Price + " BYN";
         }
         //ОБНОВЛЕНИЕ ВЛАДЕЛЬЦА
         OnOwnerUpdated();
         UnMortgageProperty();
         isMortgaged = false;
     }
+
+    //private 
 
     public void UpdateColorField(Color color)
     {
@@ -170,7 +174,7 @@ public class MonopolyNode : MonoBehaviour
         {
             propertyImage.SetActive(false);
         }
-        return mortgageValue;
+        return MortgageValue;
     }
 
     public void UnMortgageProperty()
@@ -188,7 +192,7 @@ public class MonopolyNode : MonoBehaviour
     }
 
     public bool IsMortgaged => isMortgaged;
-    public int MortgagedValue => mortgageValue;
+    public int MortgageValue => Price / 2; //цена залога
 
     //ОБНОВЛЕНИЕ ВЛАДЕЛЬЦА
 
@@ -234,7 +238,7 @@ public class MonopolyNode : MonoBehaviour
                         //Уведомление о транзакции (для всех игроков)
                         OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
                     }
-                    else if( owner == null && currentPlayer.CanAffordNode(price))
+                    else if( owner == null && currentPlayer.CanAffordNode(Price))
                     {
                         //AI Покупает карточку
                         //Debug.Log("ВЫ МОЖЕТЕ ПРИОБРЕСТИ");
@@ -296,7 +300,7 @@ public class MonopolyNode : MonoBehaviour
                         //Уведомление о транзакции (для всех игроков)
                         OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
                     }
-                    else if (owner == null && currentPlayer.CanAffordNode(price))
+                    else if (owner == null && currentPlayer.CanAffordNode(Price))
                     {
                         //AI Покупает карточку
                         //Debug.Log("ВЫ МОЖЕТЕ ПРИОБРЕСТИ");
@@ -358,7 +362,7 @@ public class MonopolyNode : MonoBehaviour
                         //Уведомление о транзакции (для всех игроков)
                         OnUpdateMessage.Invoke(currentPlayer.nickname + " платит " + rentToPay + " в качесте ренты игроку " + owner.nickname);
                     }
-                    else if (owner == null && currentPlayer.CanAffordNode(price))
+                    else if (owner == null && currentPlayer.CanAffordNode(Price))
                     {
                         //AI Покупает карточку
                         //Debug.Log("ВЫ МОЖЕТЕ ПРИОБРЕСТИ");
@@ -406,10 +410,10 @@ public class MonopolyNode : MonoBehaviour
                 break;
 
             case MonopolyNodeType.Tax:
-                GameManager.instance.AddTaxToPool(price);
-                currentPlayer.PayMoney(price);
+                GameManager.instance.AddTaxToPool(Price);
+                currentPlayer.PayMoney(Price);
                 //ПОКАЗАТЬ УВЕД.!!
-                OnUpdateMessage.Invoke(currentPlayer.nickname + " оплачивает налог в размере <b><color=red>" + price+
+                OnUpdateMessage.Invoke(currentPlayer.nickname + " оплачивает налог в размере <b><color=red>" + Price +
                     "BYN</b></color>");//DESIGN + BYN
                 break;
 

@@ -158,4 +158,24 @@ public class MonopolyBoard : MonoBehaviour
         }
         return (null, areAllSame);
     }
+
+    public MonopolyNode GetRandomPurchasableNode()
+    {
+        MonopolyNode selectedNode = null;
+        bool isPurchasableNode = false;
+
+        do
+        {
+            int randomIndex = Random.Range(0, route.Count);
+            selectedNode = route[randomIndex];
+
+            if(selectedNode.type == MonopolyNodeType.Property || selectedNode.type == MonopolyNodeType.Utility)
+            {
+                isPurchasableNode = true;
+            }
+        }
+        while (!isPurchasableNode);
+
+        return selectedNode;
+    }
 }

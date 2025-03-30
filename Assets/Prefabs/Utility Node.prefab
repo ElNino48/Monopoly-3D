@@ -320,7 +320,7 @@ MonoBehaviour:
   name: "\u041A\u043E\u043C\u043C\u0443\u043D\u0430\u043B\u044C\u043D\u0430\u044F
     \u0441\u043B\u0443\u0436\u0431\u0430"
   nameText: {fileID: 46433752027558949}
-  price: 150
+  basePrice: 150
   houseCost: 0
   priceText: {fileID: 3390740403806269872}
   calculateRentAuto: 1
@@ -332,7 +332,6 @@ MonoBehaviour:
   mortgageImage: {fileID: 5800324794063394048}
   propertyImage: {fileID: 4291144710207901560}
   isMortgaged: 0
-  mortgageValue: 75
   ownerBar: {fileID: 4787881653458312825}
   ownerText: {fileID: 4798830428743069220}
 --- !u!114 &8024646938345830156

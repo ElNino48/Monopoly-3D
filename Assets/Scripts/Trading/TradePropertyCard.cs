@@ -39,7 +39,7 @@ public class TradePropertyCard : MonoBehaviour
                 break;
         }
         mortgageImage.SetActive(node.IsMortgaged);
-        propertyPriceText.text = node.price + "BYN";
+        propertyPriceText.text = node.Price + "BYN";
         toggleButton.isOn = false;
         toggleButton.group = toggleGroup;
     }

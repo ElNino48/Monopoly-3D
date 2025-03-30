@@ -879,7 +879,7 @@ MonoBehaviour:
   propertyColorField: {fileID: 0}
   name: "\u0416/\u0414"
   nameText: {fileID: 4640428920468671695}
-  price: 250
+  basePrice: 250
   houseCost: 0
   priceText: {fileID: 8056023473239296346}
   calculateRentAuto: 1
@@ -891,7 +891,6 @@ MonoBehaviour:
   mortgageImage: {fileID: 4856178180894474287}
   propertyImage: {fileID: 8885566489008142226}
   isMortgaged: 0
-  mortgageValue: 125
   ownerBar: {fileID: 194519254093194899}
   ownerText: {fileID: 169505238298662606}
 --- !u!114 &2007303142824406896

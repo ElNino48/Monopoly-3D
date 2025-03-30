@@ -312,7 +312,6 @@ public class GameManager : MonoBehaviour
 
     public void SwitchPlayer()
     {
-        calendar.StartTurn(playerList.Count);
         CameraSwitcher.instance.SwitchToTopDown();
         currentPlayer++;
         //Debug.Log(currentPlayer + "= currentPlayer switchplayer");
@@ -324,6 +323,7 @@ public class GameManager : MonoBehaviour
         if (currentPlayer>=playerList.Count)
         {
             currentPlayer = 0;
+            calendar.StartTurn();
         }
 
         DeactivateArrows();

@@ -63,20 +63,20 @@ public class UIShowRailroad : MonoBehaviour
         fourRailroadPriceText.text = node.baseRent * (int)Mathf.Pow(2, 4 - 1) + "BYN";
 
         //ярнхлнярэ онярпнийх DESIGN
-        mortgagePriceText.text = node.MortgagedValue + "BYN";//ЯРНХЛНЯРЭ ГЮКНЦЮ
+        mortgagePriceText.text = node.MortgageValue + "BYN";//ЯРНХЛНЯРЭ ГЮКНЦЮ
 
         //BOTTOM PANEL CONTENT:
-        propertyPriceText.text = "опхнапеярх гю <color=green>" + node.price + "BYN";
+        propertyPriceText.text = "опхнапеярх гю <color=green>" + node.Price + "BYN";
         playerMoneyText.text = "аюмй: " + currentPlayer.ReadMoney + "BYN";
 
         //BuyPropertyButton мюярпнийх ймнойх
-        if (currentPlayer.CanAffordNode(node.price))
+        if (currentPlayer.CanAffordNode(node.Price))
         {
             buyRailroadButton.interactable = true;
         }
         else
         {
-            propertyPriceText.text = "опхнапеярх гю <color=red>" + node.price + "BYN";
+            propertyPriceText.text = "опхнапеярх гю <color=red>" + node.Price + "BYN";
             buyRailroadButton.interactable = false;
         }
         //ямювюкю гюонкмъеряъ йнмремр, гюрел онйюгшбюч оюмекэ:

@@ -70,20 +70,20 @@ public class UIShowProperty : MonoBehaviour
 
         //СТОИМОСТЬ ПОСТРОЙКИ 
         housePriceText.text = node.houseCost + "BYN";//стоимость домов и отелей одинаковая DESIGN
-        mortgagePriceText.text = node.MortgagedValue + "BYN";//стоимость залога
+        mortgagePriceText.text = node.MortgageValue + "BYN";//стоимость залога
        
         //BOTTOM PANEL CONTENT:
-        propertyPriceText.text = "ПРИОБРЕСТИ ЗА <color=green>" + node.price + "BYN";
+        propertyPriceText.text = "ПРИОБРЕСТИ ЗА <color=green>" + node.Price + "BYN";
         playerMoneyText.text = "БАНК: " + currentPlayer.ReadMoney + "BYN";
 
         //BuyPropertyButton НАСТРОЙКИ КНОПКИ
-        if (currentPlayer.CanAffordNode(node.price))
+        if (currentPlayer.CanAffordNode(node.Price))
         {
             buyPropertyButton.interactable = true;
         }
         else
         {
-            propertyPriceText.text = "ПРИОБРЕСТИ ЗА <color=red>" + node.price + "BYN";
+            propertyPriceText.text = "ПРИОБРЕСТИ ЗА <color=red>" + node.Price + "BYN";
             buyPropertyButton.interactable = false;
         }
         //СНАЧАЛА ЗАПОЛНЯЕТСЯ КОНТЕНТ, ЗАТЕМ ПОКАЗЫВАЮ ПАНЕЛЬ:

@@ -167,7 +167,7 @@ public class TradingSystem : MonoBehaviour
             }
             if (checkedSet.Count(n => n.Owner == currentPlayer) == 1)// ¿∆ƒ¿ﬂ  ¿–“Œ◊ ¿, √ƒ≈ ¬À¿ƒ≈À≈÷ - currentPLayer
             {
-                if (CalculateValueOfNode(node) + currentPlayer.ReadMoney >= requestedNode.price)
+                if (CalculateValueOfNode(node) + currentPlayer.ReadMoney >= requestedNode.Price)
                 {
                     //‘Œ–Ã”À¿ ‡ÒÒ˜∏Ú‡ –¿«Õ»÷€ Ã≈∆ƒ” “Œ–√”≈Ã€Ã»  ¿–“Œ◊ ¿Ã»
                     int difference = CalculateValueOfNode(requestedNode) - CalculateValueOfNode(node);
@@ -293,11 +293,11 @@ public class TradingSystem : MonoBehaviour
         {
             if (requestedNode.type == MonopolyNodeType.Property)
             {
-                value = requestedNode.price * 2 + requestedNode.NumberOfHouses * requestedNode.houseCost;
+                value = requestedNode.Price * 2 + requestedNode.NumberOfHouses * requestedNode.houseCost;
             }
             else
             {
-                value = requestedNode.price * 2;
+                value = requestedNode.Price * 2;
             }
             return value;
         }
@@ -612,7 +612,7 @@ public class TradingSystem : MonoBehaviour
         leftCard.SetActive(offeredNode != null ? true : false);
         if (leftCard.activeInHierarchy && offeredNode!=null)
         {
-            leftCardPriceText.text = offeredNode.price + "BYN";
+            leftCardPriceText.text = offeredNode.Price + "BYN";
             leftCardNameText.text = offeredNode.name;
             leftColorField.color = (offeredNode.propertyColorField!=null)?offeredNode.propertyColorField.color:Color.black;//DESIGN + ƒÀﬂ ICON
             switch (offeredNode.type)
@@ -634,7 +634,7 @@ public class TradingSystem : MonoBehaviour
         if (rightCard.activeInHierarchy)
         {
             rightCardNameText.text = requestedNode.name;
-            rightCardPriceText.text = requestedNode.price + "BYN";
+            rightCardPriceText.text = requestedNode.Price + "BYN";
             rightColorField.color = (requestedNode.propertyColorField != null) ? requestedNode.propertyColorField.color : Color.black;//DESIGN + ƒÀﬂ ICON
             switch (requestedNode.type)
             {

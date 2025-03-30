@@ -123,7 +123,7 @@ public class Player
 
     public void BuyProperty(MonopolyNode node)
     {
-        money -= node.price;
+        money -= node.Price;
         node.SetOwner(this);
         //ОБНОВЛЕНИЕ СЧЁТА БАЛАНСА
         //Debug.Log(money + "= money 1TYT");
@@ -138,7 +138,7 @@ public class Player
     }
     void SortPropertiesByPrice()
     {
-        myMonopolyNodes = myMonopolyNodes.OrderBy(_node => _node.price).ToList();
+        myMonopolyNodes = myMonopolyNodes.OrderBy(_node => _node.Price).ToList();
     }
 
     internal void PayRent(int rentAmount, Player owner)
@@ -374,7 +374,7 @@ public class Player
         {
             if (node.IsMortgaged)
             {
-                int cost = node.MortgagedValue + (int)(node.MortgagedValue * 0.1f);//цена выкупа из залога, формула (10%наценка)
+                int cost = node.MortgageValue + (int)(node.MortgageValue * 0.1f);//цена выкупа из залога, формула (10%наценка)
                 //Можем ли позволить выкупить из залога?
                 if (money >= aiMoneySavity + cost)
                 {

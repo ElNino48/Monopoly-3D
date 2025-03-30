@@ -43,8 +43,8 @@ public class ManageCardUI : MonoBehaviour
         mortgageImage.SetActive(node.IsMortgaged);
 
         //намнбкемхе рейярю
-        unMortgageValueText.text = "бшйсохрэ <color=red>-" + node.MortgagedValue +"BYN";
-        mortgageValueText.text = "гюкнфхрэ <color=green>+" + node.MortgagedValue + "BYN";
+        unMortgageValueText.text = "бшйсохрэ <color=red>-" + node.MortgageValue +"BYN";
+        mortgageValueText.text = "гюкнфхрэ <color=green>+" + node.MortgageValue + "BYN";
       
         //ймной╡ + рейяр мю мху
         mortgageButton.gameObject.SetActive(!node.IsMortgaged);
@@ -116,14 +116,14 @@ public class ManageCardUI : MonoBehaviour
             ManageUI.instance.UpdateSystemMessage(message);
             return;
         }
-        if(playerReference.ReadMoney < nodeReference.MortgagedValue)
+        if(playerReference.ReadMoney < nodeReference.MortgageValue)
         {
             //ERROR "мер демец врнаш бшйсохрэ йюпрнвйс"
             string message = "мЕДНЯРЮРНВМН ЯПЕДЯРБ!";
             ManageUI.instance.UpdateSystemMessage(message);
             return;
         }
-        playerReference.PayMoney(nodeReference.MortgagedValue);
+        playerReference.PayMoney(nodeReference.MortgageValue);
         mortgageImage.SetActive(false);
 
         mortgageButton.gameObject.SetActive(true);//ANIMATION UNMORTGAGE //DESIGN
